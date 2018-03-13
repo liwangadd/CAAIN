@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kjc-expert-config>
+    <expert>
+        <no>ZJ01-2017</no>
+        <ip>192.168.1.104</ip>
+    </expert>
+    <expert>
+        <no>ZJ02-2017</no>
+        <ip>192.168.1.101</ip>
+    </expert>
+    <expert>
+        <no>ZJ03-2017</no>
+        <ip>192.168.1.103</ip>
+    </expert>
+    <expert>
+        <no>ZJ04-2017</no>
+        <ip>192.168.1.102</ip>
+    </expert>
+    <expert>
+        <no>ZJ05-2017</no>
+        <ip>192.168.1.111</ip>
+    </expert>
+    <expert>
+        <no>ZJ06-2017</no>
+        <ip>192.168.1.107</ip>
+    </expert>
+    <expert>
+        <no>ZJ07-2017</no>
+        <ip>192.168.1.108</ip>
+    </expert>
+    <expert>
+        <no>ZJ08-2017</no>
+        <ip>192.168.1.106</ip>
+    </expert>
+    <expert>
+        <no>ZJ09-2017</no>
+        <ip>192.168.1.105</ip>
+    </expert>
+    <expert>
+        <no>ZJ010-2017</no>
+        <ip>192.168.1.110</ip>
+    </expert>
+    <expert>
+        <no>ZJ011-2017</no>
+        <ip>192.168.1.100</ip>
+    </expert>
+</kjc-expert-config>

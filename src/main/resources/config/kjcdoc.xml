@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kjc-doc-config>
+    <award name="自然科学奖">
+        <entry name="自然科学1.pdf"></entry>
+        <entry name="自然科学2.pdf"></entry>
+        <entry name="自然科学3.pdf"></entry>
+    </award>
+    <award name="技术发明奖">
+        <entry name="技术发明1.pdf"></entry>
+        <entry name="技术发明2.pdf"></entry>
+        <entry name="技术发明3.pdf"></entry>
+        <entry name="技术发明4.pdf"></entry>
+        <entry name="技术发明5.pdf"></entry>
+        <entry name="技术发明6.pdf"></entry>
+        <entry name="技术发明7.pdf"></entry>
+    </award>
+    <award name="科技进步奖">
+        <entry name="科技进步1.pdf"></entry>
+        <entry name="科技进步2.pdf"></entry>
+        <entry name="科技进步3.pdf"></entry>
+        <entry name="科技进步4.pdf"></entry>
+        <entry name="科技进步5.pdf"></entry>
+        <entry name="科技进步6.pdf"></entry>
+    </award>
+</kjc-doc-config>

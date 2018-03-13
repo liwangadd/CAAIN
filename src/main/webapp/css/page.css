@@ -1,0 +1,136 @@
+body{
+	width:100%;
+	MARGIN-TOP: 0px;
+	}
+
+.logo{
+	background:url(../img/logo_ico.png) no-repeat;
+	height:140px;
+	cursor:pointer
+}
+.logo_text{
+	font-size:50px;
+	font-family:华文行楷;
+	position:relative;
+	margin:0 auto;
+	top:50px;
+	margin-left:145px;
+}
+
+.line{
+	background-color:#E5ECF9;
+	border-top:1px solid #3366CC;
+	height:28px
+}
+
+.clear{
+	line-height:0;
+}
+
+.left_bar{
+	float:left;
+	width:25%;
+	border-right:solid #e5ecf9;
+	height:800px;
+	}
+
+.right_bar{
+	float:right;
+	width:74%;
+	height:800px;
+	}
+
+.vote_bar{
+	float:left;
+	width:100%;
+	margin-left:4%;
+	margin-top:5px;
+	}
+
+
+.foot_bar{clear:both;}
+
+.votetable,.thirdtable{
+	float:left;
+	width:98%;
+	text-align:center;
+	border-collapse:collapse;
+	margin-left:10%;
+	margin-top:0px;
+	}
+
+.votetable,.thirdtable tr,td{
+	border:1px solid;
+	border-collapse:collapse;
+	/*font-size:20px;*/
+}
+.votetable tr td {
+	border-color:black;
+}
+
+.thirdtable tr, .thirdtable td{
+	/*font-size:24px*/
+}
+
+.votetable input{
+	/*font-size:15px;*/
+	display:block;
+	float:left;
+	/*width:15px;*/
+}
+
+.votetable .inputShowRes, .votetable .inputShowRes-red{
+	  display:block;
+	  float:left;
+	  width:80px;
+    border-right: #ffffff 0px solid;
+    border-top: #ffffff 0px solid;
+    font-size: 28pt;
+	color:#0066CC;
+	font-weight:bold;
+    border-left: #ffffff 0px solid;
+    border-bottom: #c0c0c0 0px solid;
+    background-color: #ffffff;
+	text-align:center;
+        vertical-align:middle;
+       /* margin-top:15px;*/
+}
+
+.font_res{
+font-size: 28pt;
+	color:#0066CC;
+	font-weight:bold;
+	text-align:center;
+}
+.votetable .inputShowRes-red {
+	color:red;
+}
+
+/*onmouseover="this.style.backgroundColor='#d2f8e7'";
+						onmouseout="this.style.backgroundColor='white'";*/
+
+.votetable tbody tr{
+	background-color:white;
+}
+
+.votetable tbody tr:hover, .votetable tbody tr:hover .inputShowRes,.votetable tbody tr:hover .inputShowRes-red {
+	background-color:#d2f8e7;
+}
+
+.tbtrTitle
+{
+	background:#bbe3fb;
+	height:30px;
+	font-weight:bold;
+	font-size:24px;
+}
+
+
+#vote .left_bar, #third .left_bar{
+	width:0;
+	display:none;
+}
+
+.table tbody tr td{
+	vertical-align: middle;
+}
