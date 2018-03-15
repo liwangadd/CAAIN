@@ -13,7 +13,7 @@
     <context:component-scan base-package="org.bupt.caain.model"/>
     <context:component-scan base-package="org.bupt.caain.service"/>
 
-    <jdbc:embedded-database id="dataSource" type="HSQL">
+    <jdbc:embedded-database id="dataSource" type="HSQL" database-name="caain">
         <jdbc:script location="classpath:sql/hsql-schema.sql"/>
     </jdbc:embedded-database>
 

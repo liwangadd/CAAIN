@@ -1,8 +1,13 @@
 package org.bupt.caain.model;
 
+import org.bupt.caain.pojo.po.Expert;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
+
+import javax.management.MBeanPermission;
+import java.util.List;
 
 @Repository
 public class ExpertModel {
@@ -19,6 +24,14 @@ public class ExpertModel {
         return jdbcTemplate.queryForObject("SELECT COUNT(1) FROM expert", Integer.class);
     }
 
+    public Expert queryById(int expertId) {
+        List<Expert> experts = jdbcTemplate.query("SELECT * FROM expert WHERE id = ?", new BeanPropertyRowMapper<Expert>(Expert.class), expertId);
+        if (null != experts && experts.size() > 0) {
+            return experts.get(0);
+        }
+        return null;
+    }
+
     /**
      * 重置voted字段
      */
@@ -32,6 +45,14 @@ public class ExpertModel {
 
     public int queryVotedCount() {
         return jdbcTemplate.queryForObject("SELECT COUNT(1) FROM expert WHERE voted = 1", Integer.class);
+    }
+
+    public Expert queryByIp(String ip) {
+        List<Expert> experts = jdbcTemplate.query("SELECT id, num, voted FROM expert WHERE ip = ?", new BeanPropertyRowMapper<Expert>(Expert.class), ip);
+        if (experts != null && experts.size() > 0) {
+            return experts.get(0);
+        }
+        return null;
     }
 
 }

@@ -4,6 +4,7 @@ import org.bupt.caain.model.AwardModel;
 import org.bupt.caain.model.EntryModel;
 import org.bupt.caain.pojo.po.Award;
 import org.bupt.caain.pojo.po.Entry;
+import org.bupt.caain.pojo.po.Expert;
 import org.bupt.caain.pojo.vo.HomeTreeAwardVO;
 import org.bupt.caain.pojo.vo.HomeTreeEntryVo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,8 +17,6 @@ import java.util.List;
 @Service
 public class HomeService {
 
-    @Autowired
-    private JdbcTemplate jdbcTemplate;
     @Autowired
     private AwardModel awardModel;
     @Autowired

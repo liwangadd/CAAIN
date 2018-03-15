@@ -2,6 +2,7 @@ package org.bupt.caain.controller;
 
 import org.bupt.caain.pojo.vo.HomeTreeAwardVO;
 import org.bupt.caain.service.HomeService;
+import org.bupt.caain.utils.CommonResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -23,9 +24,9 @@ public class HomeController {
 
     @RequestMapping(value = "entries", method = RequestMethod.GET)
     public @ResponseBody
-    List<HomeTreeAwardVO> getEntriesTree() {
+    CommonResult getEntriesTree() {
         List<HomeTreeAwardVO> entriesTree = homeService.getEntriesTree();
-        return entriesTree;
+        return CommonResult.success("获取成功", entriesTree);
     }
 
 }

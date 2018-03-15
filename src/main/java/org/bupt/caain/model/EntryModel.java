@@ -58,7 +58,11 @@ public class EntryModel {
     }
 
     public Entry queryById(int id) {
-        return jdbcTemplate.queryForObject("SELECT level1, level2, level3 FROM entry FROM entry WHERE id = ?", Entry.class, id);
+        List<Entry> entries = jdbcTemplate.query("SELECT * FROM entry WHERE id = ?", new BeanPropertyRowMapper<Entry>(Entry.class), id);
+        if (null != entries && entries.size() > 0) {
+            return entries.get(0);
+        }
+        return null;
     }
 
     public void updateLevelById(Entry entry) {

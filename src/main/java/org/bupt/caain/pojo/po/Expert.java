@@ -5,6 +5,7 @@ public class Expert {
     private int id;
     private String num;
     private String ip;
+    private int voted;
 
     public int getId() {
         return id;
@@ -28,6 +29,14 @@ public class Expert {
 
     public void setIp(String ip) {
         this.ip = ip;
+    }
+
+    public int getVoted() {
+        return voted;
+    }
+
+    public void setVoted(int voted) {
+        this.voted = voted;
     }
 
     @Override
