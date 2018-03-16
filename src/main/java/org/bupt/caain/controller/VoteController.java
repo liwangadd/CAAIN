@@ -1,5 +1,7 @@
 package org.bupt.caain.controller;
 
+import com.itextpdf.text.DocumentException;
+import org.bupt.caain.pojo.jo.VotePerExpert;
 import org.bupt.caain.pojo.po.Award;
 import org.bupt.caain.pojo.po.Entry;
 import org.bupt.caain.pojo.po.EntryExpert;
@@ -7,6 +9,7 @@ import org.bupt.caain.pojo.po.Expert;
 import org.bupt.caain.pojo.vo.HomeTreeAwardVO;
 import org.bupt.caain.pojo.vo.VoteVo;
 import org.bupt.caain.service.HomeService;
+import org.bupt.caain.service.PrintService;
 import org.bupt.caain.service.VoteService;
 import org.bupt.caain.utils.CommonResult;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -75,10 +78,15 @@ public class VoteController {
 
     @RequestMapping(value = "vote", method = RequestMethod.POST)
     public @ResponseBody
-    CommonResult votePerExpert(@RequestBody List<EntryExpert> entryExperts) {
-        System.out.println(entryExperts);
-        boolean isSuccess = voteService.votePerExpert(entryExperts);
+    CommonResult votePerExpert(@RequestBody List<VotePerExpert> votesOfExpert) {
+        System.out.println(votesOfExpert);
+        boolean isSuccess = voteService.votePerExpert(votesOfExpert);
         if (isSuccess) {
+            try {
+                voteService.printVotesPerExpert(votesOfExpert);
+            } catch (DocumentException e) {
+                System.out.println("PDF文件生成失败");
+            }
             return CommonResult.success("投票成功");
         } else {
             return CommonResult.failure("请勿重复投票");
@@ -97,20 +105,33 @@ public class VoteController {
     }
 
     @RequestMapping(value = "vote/clear", method = RequestMethod.GET)
-    public CommonResult clear(@RequestParam(value = "username") String username, @RequestParam(value = "password") String password) {
+    public @ResponseBody
+    CommonResult clear(@RequestParam(value = "username") String username, @RequestParam(value = "password") String password) {
         if ("bupt".equals(username) && "bupt".equals(password)) {
             voteService.clearVote();
-            CommonResult.success("成功清空投票结果");
+            return CommonResult.success("成功清空投票结果");
         }
         return CommonResult.failure("用户名或密码错误");
     }
 
     @RequestMapping(value = "/unvoted", method = RequestMethod.GET)
-    public @ResponseBody  CommonResult getUnvotedExpertCount() {
+    public @ResponseBody
+    CommonResult getUnvotedExpertCount() {
         Map<String, Object> content = new HashMap<String, Object>();
         int count = voteService.getUnvotedExpertCount();
         content.put("count", count);
         return CommonResult.success("获取未投票专家人数", content);
+    }
+
+    @RequestMapping(value = "/pdf/{award_id}", method = RequestMethod.GET)
+    public @ResponseBody
+    CommonResult buildFinalPDF(@PathVariable int award_id) {
+        try {
+            voteService.printFinalPDF(award_id);
+        } catch (DocumentException e) {
+            return CommonResult.failure("PDF文件生成失败");
+        }
+        return CommonResult.success("最终文件生成成功");
     }
 
 }

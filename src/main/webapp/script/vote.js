@@ -1,6 +1,7 @@
 let award_id = 1;
 let awards_ids = [];
 let expert_id = 0;
+let fetchUnvoteInterval;
 
 $(function () {
 
@@ -22,28 +23,31 @@ $(function () {
         "hideMethod": "fadeOut"
     };
 
-    $.ajax({
-        url: '/awards',
-        type: 'GET',
-        contentType: 'application/json',
-        dataType: 'json',
-        success: (result) => {
-            let award_div = $("#awards_btn");
-            if (result['code'] !== 'FAILURE') {
-                content = result['content'];
-                award_id = content[0]['id'];
-                content.forEach(function (award) {
-                    awards_ids.push(award['id']);
-                    award_div.append(`<button id="award_btn_${award['id']}" name="${award['id']}" class="btn btn-default award_btn">${award['award_name']}</button>`)
-                });
-                for (let i = 1, len = content.length; i <= len; ++i) {
-                    $(`#award_btn_${i}`).on('click', () => {
-                        fetchEntriesForType(awards_ids[i - 1]);
-                    })
+    function fetchAwardTypes() {
+        $.ajax({
+            url: '/awards',
+            type: 'GET',
+            contentType: 'application/json',
+            dataType: 'json',
+            success: (result) => {
+                let award_div = $("#awards_btn");
+                if (result['code'] !== 'FAILURE') {
+                    content = result['content'];
+                    award_id = content[0]['id'];
+                    fetchEntriesForType(award_id);
+                    content.forEach(function (award) {
+                        awards_ids.push(award['id']);
+                        award_div.append(`<button id="award_btn_${award['id']}" name="${award['id']}" class="btn btn-default award_btn">${award['award_name']}</button>`)
+                    });
+                    for (let i = 1, len = content.length; i <= len; ++i) {
+                        $(`#award_btn_${i}`).on('click', () => {
+                            fetchEntriesForType(awards_ids[i - 1]);
+                        })
+                    }
                 }
             }
-        }
-    });
+        });
+    }
 
     $.ajax({
         url: "/expert",
@@ -54,8 +58,9 @@ $(function () {
             if (result['code'] === 'FAILURE') {
                 toastr.options.timeout = 2000;
                 toastr.error(result['reason']);
+                $('#submitVote').attr('disabled', 'disabled');
             } else {
-                fetchEntriesForType(award_id);
+                fetchAwardTypes();
                 expert_id = result['content']['id'];
                 if (result['content']['voted'] === 1) {
                     $('#submitVote').attr('disabled', 'disabled');
@@ -89,7 +94,7 @@ $(function () {
                             </select>
                         </td>
                         <td>${content[i]['expert_num']}</td>
-                        <td id="entryName">${content[i]['entry_name']}</td>
+                        <td id="entry_name">${content[i]['entry_name']}</td>
                         <td></td>
                     </tr>`)
                     }
@@ -112,8 +117,8 @@ $(function () {
 
                 $('#rest_h2').text(`还剩${result['content']['count']}个专家没有投票`);
 
-                if (result['content']['count'] == 0) {
-                    clearInterval(fetchUnvotedExpert);
+                if (result['content']['count'] === 0) {
+                    clearInterval(fetchUnvoteInterval);
                     showResult();
                 }
             }
@@ -130,6 +135,7 @@ $(function () {
                 let level1 = 0, level2 = 0, level3 = 0;
                 let prize = $(this).find('option:selected').text();
                 let entry_id = $(this).find('#entry_id').text();
+                let entry_name = $(this).find('#entry_name').text();
                 if (prize === '一等奖') {
                     level1 = 1;
                 } else if (prize === '二等奖') {
@@ -143,6 +149,9 @@ $(function () {
                 entry_expert['level1'] = level1;
                 entry_expert['level2'] = level2;
                 entry_expert['level3'] = level3;
+                entry_expert['entry_prize'] = prize;
+                entry_expert['award_id'] = award_id;
+                entry_expert['entry_name'] = entry_name;
                 vote_result.push(entry_expert);
             });
             console.log(vote_result);
@@ -157,7 +166,7 @@ $(function () {
                     console.log(result);
                     if (result['code'] === 'SUCCESS') {
                         $('#submitVote').attr('disabled', 'disabled');
-                        setInterval(fetchUnvotedExpert, 2000);
+                        fetchUnvoteInterval = setInterval(fetchUnvotedExpert, 2000);
                     } else {
                         toastr.options.timeout = 2000;
                         toastr.error(result['reason']);
@@ -174,6 +183,16 @@ $(function () {
             success: (result) => {
                 console.log(result);
                 if (result['code'] === 'SUCCESS') {
+                    let voteThead = $('#voteThead');
+                    voteThead.empty();
+                    voteThead.append('<tr>\n' +
+                        '<th class="text-center">序号</th>\n' +
+                        '<th class="text-center">总专家数</th>\n' +
+                        '<th class="text-center">文档名称</th>\n' +
+                        '<th class="text-center">获奖结果</th>\n' +
+                        '</tr>');
+
+
                     let voteBody = $("#voteBody");
                     voteBody.empty();
                     content = result['content'];
@@ -181,8 +200,8 @@ $(function () {
                         voteBody.append(`<tr>
                                 <td id="entryId">${i + 1}</td>
                                 <td>11</td>
-                                <td id="entryName">${entries[i]}</td>
-                                <td>${content['prize']}</td>
+                                <td id="entryName">${content[i]['entry_name']}</td>
+                                <td>${content[i]['prize']}</td>
                             </tr>`)
                     }
                 } else {
@@ -192,5 +211,7 @@ $(function () {
             }
         })
     }
+
+    $('#showResult').on('click', showResult);
 
 });

@@ -3,7 +3,7 @@ package org.bupt.caain.pojo.po;
 public class Entry {
     private int id;
     private String entry_name;
-    private String prize;
+    private String entry_prize;
     private int level1;
     private int level2;
     private int level3;
@@ -23,14 +23,6 @@ public class Entry {
 
     public void setEntry_name(String entry_name) {
         this.entry_name = entry_name;
-    }
-
-    public String getPrize() {
-        return prize;
-    }
-
-    public void setPrize(String prize) {
-        this.prize = prize;
     }
 
     public int getLevel1() {
@@ -65,12 +57,20 @@ public class Entry {
         this.award_id = award_id;
     }
 
+    public String getEntry_prize() {
+        return entry_prize;
+    }
+
+    public void setEntry_prize(String entry_prize) {
+        this.entry_prize = entry_prize;
+    }
+
     @Override
     public String toString() {
         return "Entry{" +
                 "id=" + id +
                 ", entry_name='" + entry_name + '\'' +
-                ", prize='" + prize + '\'' +
+                ", entry_prize='" + entry_prize + '\'' +
                 ", level1=" + level1 +
                 ", level2=" + level2 +
                 ", level3=" + level3 +

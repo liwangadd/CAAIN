@@ -1,10 +1,13 @@
 package org.bupt.caain.service;
 
+import com.itextpdf.text.DocumentException;
+import org.bupt.caain.model.AwardModel;
 import org.bupt.caain.model.EntryExpertModel;
 import org.bupt.caain.model.EntryModel;
 import org.bupt.caain.model.ExpertModel;
+import org.bupt.caain.pojo.jo.VotePerExpert;
+import org.bupt.caain.pojo.po.Award;
 import org.bupt.caain.pojo.po.Entry;
-import org.bupt.caain.pojo.po.EntryExpert;
 import org.bupt.caain.pojo.po.Expert;
 import org.bupt.caain.pojo.vo.VoteVo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +25,10 @@ public class VoteService {
     private EntryModel entryModel;
     @Autowired
     private EntryExpertModel entryExpertModel;
+    @Autowired
+    private AwardModel awardModel;
+    @Autowired
+    private PrintService printService;
 
     private boolean shellBuildPrize = true;
 
@@ -43,16 +50,16 @@ public class VoteService {
         }
     }
 
-    public boolean votePerExpert(List<EntryExpert> entryExperts) {
-        Expert expert = expertModel.queryById(entryExperts.get(0).getExpert_id());
+    public boolean votePerExpert(List<VotePerExpert> votesOfExpert) {
+        Expert expert = expertModel.queryById(votesOfExpert.get(0).getExpert_id());
         if (expert != null && expert.getVoted() != 1) {
-            for (EntryExpert entryExpert : entryExperts) {
-                if (entryExpertModel.queryByEntryAndExpert(entryExpert) && entryExpert.getExpert_id() != 0) {
-                    entryExpertModel.insert(entryExpert);
-                    Entry entry = entryModel.queryById(entryExpert.getEntry_id());
-                    entry.setLevel1(entry.getLevel1() + entryExpert.getLevel1());
-                    entry.setLevel2(entry.getLevel2() + entryExpert.getLevel2());
-                    entry.setLevel3(entry.getLevel3() + entryExpert.getLevel3());
+            for (VotePerExpert votePerExpert : votesOfExpert) {
+                if (entryExpertModel.queryByEntryAndExpert(votePerExpert) == null && votePerExpert.getExpert_id() != 0) {
+                    entryExpertModel.insert(votePerExpert);
+                    Entry entry = entryModel.queryById(votePerExpert.getEntry_id());
+                    entry.setLevel1(entry.getLevel1() + votePerExpert.getLevel1());
+                    entry.setLevel2(entry.getLevel2() + votePerExpert.getLevel2());
+                    entry.setLevel3(entry.getLevel3() + votePerExpert.getLevel3());
                     entryModel.updateLevelById(entry);
                 }
             }
@@ -89,7 +96,7 @@ public class VoteService {
             voteVo.setId(entry.getId());
             voteVo.setExpert_num(expertCount);
             voteVo.setEntry_name(entry.getEntry_name());
-            voteVo.setPrize(entry.getPrize());
+            voteVo.setPrize(entry.getEntry_prize());
             voteVos.add(voteVo);
         }
         return voteVos;
@@ -107,6 +114,21 @@ public class VoteService {
 
     public int getUnvotedExpertCount() {
         return expertModel.queryCount() - expertModel.queryVotedCount();
+    }
+
+    public void printVotesPerExpert(List<VotePerExpert> votesOfExpert) throws DocumentException {
+        Expert expert = expertModel.queryById(votesOfExpert.get(0).getExpert_id());
+        Award award = awardModel.queryById(votesOfExpert.get(0).getAward_id());
+        String awardName = award.getAward_name();
+        String filePath = "D:/caain/" + awardName + "/" + expert.getNum() + ".pdf";
+        printService.printVoteResultPerExpert(votesOfExpert, filePath, awardName);
+    }
+
+    public void printFinalPDF(int award_id) throws DocumentException {
+        List<Entry> entries = entryModel.queryEntriesByAwardId(award_id);
+        Award award = awardModel.queryById(award_id);
+        String filePath = "D:/caain/" + award.getAward_name() + "/final.pdf";
+        printService.printVoteResult(entries, filePath, award.getAward_name());
     }
 
 }

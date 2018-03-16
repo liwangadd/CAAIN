@@ -1,15 +1,11 @@
 package org.bupt.caain.model;
 
-import com.sun.java.accessibility.util.EventID;
 import org.bupt.caain.pojo.po.Entry;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.List;
 
 @Repository
@@ -25,15 +21,8 @@ public class EntryModel {
      * @return
      */
     public List<Entry> queryEntriesByAwardId(int awardId) {
-        List<Entry> entries = jdbcTemplate.query("SELECT id, entry_name, entry_prize FROM entry WHERE award_id = ?", new RowMapper<Entry>() {
-            public Entry mapRow(ResultSet resultSet, int i) throws SQLException {
-                Entry entry = new Entry();
-                entry.setId(resultSet.getInt("id"));
-                entry.setPrize(resultSet.getString("entry_prize"));
-                entry.setEntry_name(resultSet.getString("entry_name"));
-                return entry;
-            }
-        }, awardId);
+        List<Entry> entries = jdbcTemplate.query("SELECT id, entry_name, entry_prize, level1, level2, level3, award_id FROM entry WHERE award_id = ?",
+                new BeanPropertyRowMapper<>(Entry.class), awardId);
         return entries;
     }
 
@@ -43,22 +32,23 @@ public class EntryModel {
      * @param awardId
      */
     public void buildPrizeField(int awardId) {
-        List<Entry> entries = jdbcTemplate.query("SELECT id, level1, level2, level3 FROM entry WHERE award_id = ?", new BeanPropertyRowMapper<Entry>(),
+        List<Entry> entries = jdbcTemplate.query("SELECT id, level1, level2, level3 FROM entry WHERE award_id = ?", new BeanPropertyRowMapper<Entry>(Entry.class),
                 awardId);
         for (Entry entry : entries) {
             if (entry.getLevel1() >= 8) {
-                entry.setPrize("一等奖");
+                entry.setEntry_prize("一等奖");
             } else if (entry.getLevel1() + entry.getLevel2() >= 6) {
-                entry.setPrize("二等奖");
+                entry.setEntry_name("二等奖");
             } else {
-                entry.setPrize("三等奖");
+                entry.setEntry_prize("三等奖");
             }
-            jdbcTemplate.update("UPDATE entry SET prize = ?", entry.getPrize());
+            jdbcTemplate.update("UPDATE entry SET entry_prize = ? WHERE id = ?", entry.getEntry_prize(), entry.getId());
         }
     }
 
     public Entry queryById(int id) {
-        List<Entry> entries = jdbcTemplate.query("SELECT * FROM entry WHERE id = ?", new BeanPropertyRowMapper<Entry>(Entry.class), id);
+        List<Entry> entries = jdbcTemplate.query("SELECT id, entry_name, entry_prize, level1, level2, level3, award_id FROM entry WHERE id = ?",
+                new BeanPropertyRowMapper<Entry>(Entry.class), id);
         if (null != entries && entries.size() > 0) {
             return entries.get(0);
         }

@@ -11,8 +11,6 @@
     <link href="../css/bootstrap.css" rel="stylesheet">
     <script src="../script/bootstrap.js"></script>
 
-    <link href="../css/bootstrap-select.min.css" rel="stylesheet">
-    <script src="../script/bootstrap-select.min.js"></script>
     <link href="../css/toastr.min.css" rel="stylesheet">
     <link href="../css/page.css" rel="stylesheet">
 </head>
@@ -56,7 +54,7 @@
             <%--<button class="btn btn-default" type="button" style="width:100px">技术进步奖</button>--%>
         </div>
         <div>
-            <button id="showResult" class="btn btn-default" type="button" style="width:110px;margin-top:10px" onclick="showResult()">显示投票结果</button>
+            <button id="showResult" class="btn btn-default" type="button" style="width:110px;margin-top:10px">显示投票结果</button>
         </div>
 
         <div id="rest_div" class="panel panel-default hidden" style="margin-top: 20px">
