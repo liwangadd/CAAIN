@@ -25,10 +25,6 @@ public class VoteService {
     private EntryModel entryModel;
     @Autowired
     private EntryExpertModel entryExpertModel;
-    @Autowired
-    private AwardModel awardModel;
-    @Autowired
-    private PrintService printService;
 
     private boolean shellBuildPrize = true;
 
@@ -67,11 +63,6 @@ public class VoteService {
             return true;
         }
         return false;
-    }
-
-    public void clearVote() {
-        shellBuildPrize = true;
-        expertModel.resetVote();
     }
 
     public void buildVoteResult(int awardId) {
@@ -116,19 +107,9 @@ public class VoteService {
         return expertModel.queryCount() - expertModel.queryVotedCount();
     }
 
-    public void printVotesPerExpert(List<VotePerExpert> votesOfExpert) throws DocumentException {
-        Expert expert = expertModel.queryById(votesOfExpert.get(0).getExpert_id());
-        Award award = awardModel.queryById(votesOfExpert.get(0).getAward_id());
-        String awardName = award.getAward_name();
-        String filePath = "D:/caain/" + awardName + "/" + expert.getNum() + ".pdf";
-        printService.printVoteResultPerExpert(votesOfExpert, filePath, awardName);
+    public void setShellBuildPrize(boolean shellBuild) {
+        this.shellBuildPrize = shellBuild;
     }
 
-    public void printFinalPDF(int award_id) throws DocumentException {
-        List<Entry> entries = entryModel.queryEntriesByAwardId(award_id);
-        Award award = awardModel.queryById(award_id);
-        String filePath = "D:/caain/" + award.getAward_name() + "/final.pdf";
-        printService.printVoteResult(entries, filePath, award.getAward_name());
-    }
 
 }

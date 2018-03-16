@@ -60,4 +60,11 @@ public class EntryModel {
                 entry.getLevel2(), entry.getLevel3(), entry.getId());
     }
 
+    public void resetAll() {
+        jdbcTemplate.update("UPDATE entry SET entry_prize='', level1 = 0, level2 = 0, level3 = 0");
+    }
+
+    public void deleteByAwardId(int awardId) {
+        jdbcTemplate.update("UPDATE entry SET entry_prize='', level1 = 0, level2 = 0, level3 = 0 WHERE award_id = ?", awardId);
+    }
 }

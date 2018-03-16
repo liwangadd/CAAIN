@@ -17,7 +17,7 @@ import java.util.List;
 @Service
 public class PrintService {
 
-    public String printVoteResultPerExpert(List<VotePerExpert> votesOfExpert, String filePath, String title) throws DocumentException {
+    public String printVoteResultPerExpert(List<VotePerExpert> votesOfExpert, String filePath, String title, String expertNum) throws DocumentException {
         // 打开PDF文件
         Document document = null;
         try {
@@ -43,17 +43,18 @@ public class PrintService {
         table.addCell(cell2);
 
         for (VotePerExpert votePerExpert : votesOfExpert) {
-            PdfPCell nameCell = new PdfPCell(new Paragraph(votePerExpert.getEntry_name()));
+            PdfPCell nameCell = new PdfPCell(new Paragraph(votePerExpert.getEntry_name(), cellFont));
             nameCell.setColspan(2);
             nameCell.setMinimumHeight(20);
-            PdfPCell prizeCell = new PdfPCell(new Paragraph(votePerExpert.getEntry_prize()));
+            PdfPCell prizeCell = new PdfPCell(new Paragraph(votePerExpert.getEntry_prize(), cellFont));
             prizeCell.setMinimumHeight(20);
             table.addCell(nameCell);
             table.addCell(prizeCell);
         }
         document.add(table);
 
-        Paragraph signParagraph = new Paragraph("专家签字:", cellFont);
+        addBlankLine(document, 3);
+        Paragraph signParagraph = new Paragraph(expertNum + "  专家签字:", cellFont);
         signParagraph.setAlignment(Element.ALIGN_RIGHT);
         signParagraph.setIndentationRight(150);
         document.add(signParagraph);
@@ -94,8 +95,8 @@ public class PrintService {
         table.addCell(cell4);
         table.addCell(cell5);
 
-        for (Entry entry : entries) {File
-            PdfPCell nameCell = new PdfPCell(new Paragraph(entry.getEntry_name()));
+        for (Entry entry : entries) {
+            PdfPCell nameCell = new PdfPCell(new Paragraph(entry.getEntry_name(), cellFont));
             nameCell.setColspan(5);
             nameCell.setMinimumHeight(20);
             PdfPCell level1Cell = new PdfPCell(new Paragraph(entry.getLevel1() + "", cellFont));
@@ -113,6 +114,7 @@ public class PrintService {
         }
         document.add(table);
 
+        addBlankLine(document, 3);
         Paragraph signParagraph = new Paragraph("专家签字:", cellFont);
         signParagraph.setAlignment(Element.ALIGN_RIGHT);
         signParagraph.setIndentationRight(150);

@@ -30,4 +30,7 @@ public class EntryExpertModel {
         return null;
     }
 
+    public void deleteAll() {
+        jdbcTemplate.update("DELETE FROM  entry_expert");
+    }
 }

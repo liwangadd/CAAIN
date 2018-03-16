@@ -19,7 +19,7 @@ public class AwardModel {
     }
 
     public Award queryById(int id) {
-        List<Award> awards = jdbcTemplate.query("SELECT id award_name FROM award WHERE id = ?", new BeanPropertyRowMapper<>(Award.class), id);
+        List<Award> awards = jdbcTemplate.query("SELECT id, award_name FROM award WHERE id = ?", new BeanPropertyRowMapper<>(Award.class), id);
         if (awards != null && awards.size() > 0) {
             return awards.get(0);
         } else {

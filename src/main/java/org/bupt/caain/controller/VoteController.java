@@ -8,6 +8,7 @@ import org.bupt.caain.pojo.po.EntryExpert;
 import org.bupt.caain.pojo.po.Expert;
 import org.bupt.caain.pojo.vo.HomeTreeAwardVO;
 import org.bupt.caain.pojo.vo.VoteVo;
+import org.bupt.caain.service.AdminService;
 import org.bupt.caain.service.HomeService;
 import org.bupt.caain.service.PrintService;
 import org.bupt.caain.service.VoteService;
@@ -29,6 +30,8 @@ public class VoteController {
     private VoteService voteService;
     @Autowired
     private HomeService homeService;
+    @Autowired
+    private AdminService adminService;
 
     @RequestMapping(value = "vote", method = RequestMethod.GET)
     public String getVotePage() {
@@ -83,7 +86,7 @@ public class VoteController {
         boolean isSuccess = voteService.votePerExpert(votesOfExpert);
         if (isSuccess) {
             try {
-                voteService.printVotesPerExpert(votesOfExpert);
+                adminService.printVotesPerExpert(votesOfExpert);
             } catch (DocumentException e) {
                 System.out.println("PDF文件生成失败");
             }
@@ -104,15 +107,6 @@ public class VoteController {
         return CommonResult.success("获取投票结果", voteResult);
     }
 
-    @RequestMapping(value = "vote/clear", method = RequestMethod.GET)
-    public @ResponseBody
-    CommonResult clear(@RequestParam(value = "username") String username, @RequestParam(value = "password") String password) {
-        if ("bupt".equals(username) && "bupt".equals(password)) {
-            voteService.clearVote();
-            return CommonResult.success("成功清空投票结果");
-        }
-        return CommonResult.failure("用户名或密码错误");
-    }
 
     @RequestMapping(value = "/unvoted", method = RequestMethod.GET)
     public @ResponseBody
@@ -121,17 +115,6 @@ public class VoteController {
         int count = voteService.getUnvotedExpertCount();
         content.put("count", count);
         return CommonResult.success("获取未投票专家人数", content);
-    }
-
-    @RequestMapping(value = "/pdf/{award_id}", method = RequestMethod.GET)
-    public @ResponseBody
-    CommonResult buildFinalPDF(@PathVariable int award_id) {
-        try {
-            voteService.printFinalPDF(award_id);
-        } catch (DocumentException e) {
-            return CommonResult.failure("PDF文件生成失败");
-        }
-        return CommonResult.success("最终文件生成成功");
     }
 
 }
