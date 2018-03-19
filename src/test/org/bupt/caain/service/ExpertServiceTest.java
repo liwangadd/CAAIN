@@ -38,4 +38,8 @@ public class ExpertServiceTest {
         }
     }
 
+    public void sourceRead(){
+        ThreadLocal<Integer> threadLocal = new ThreadLocal<Integer>();
+    }
+
 }

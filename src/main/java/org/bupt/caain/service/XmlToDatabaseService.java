@@ -54,20 +54,31 @@ public class XmlToDatabaseService {
         List<Element> awardElements = rootElement.elements("award");
         for (Element awardElement : awardElements) {
             final String award = awardElement.attributeValue("name");
-            KeyHolder keyHolder = new GeneratedKeyHolder();
-            PreparedStatementCreator creator = new PreparedStatementCreator() {
-                public PreparedStatement createPreparedStatement(Connection conn) throws SQLException {
-                    PreparedStatement ps = conn.prepareStatement("INSERT INTO award (award_name) VALUES (?)", new int[]{1});
-                    ps.setString(1, award);
-                    return ps;
-                }
+            KeyHolder awardKeyHolder = new GeneratedKeyHolder();
+            PreparedStatementCreator creator = conn -> {
+                PreparedStatement ps = conn.prepareStatement("INSERT INTO award (award_name) VALUES (?)", new int[]{1});
+                ps.setString(1, award);
+                return ps;
             };
-            jdbcTemplate.update(creator, keyHolder);
-            int awardId = keyHolder.getKey().intValue();
+            jdbcTemplate.update(creator, awardKeyHolder);
+            final int awardId = awardKeyHolder.getKey().intValue();
             List<Element> entryElements = awardElement.elements("entry");
             for (Element entryElement : entryElements) {
-                String entry = entryElement.attributeValue("name");
-                jdbcTemplate.update("INSERT INTO entry (entry_name, award_id) VALUES (?, ?)", entry, awardId);
+                final String entry = entryElement.attributeValue("name");
+//                jdbcTemplate.update("INSERT INTO entry (entry_name, award_id) VALUES (?, ?)", entry, awardId);
+                KeyHolder entryKeyHolder = new GeneratedKeyHolder();
+                jdbcTemplate.update(connection -> {
+                    PreparedStatement statement = connection.prepareStatement("INSERT INTO entry (entry_name, award_id) VALUES (?, ?)", new int[]{1, 2});
+                    statement.setString(1, entry);
+                    statement.setInt(2, awardId);
+                    return statement;
+                }, entryKeyHolder);
+                int entryId = Integer.parseInt(entryKeyHolder.getKeys().get("ID").toString());
+                List<Element> attachElements = entryElement.elements("attach");
+                for (Element attachElement : attachElements) {
+                    String attachName = attachElement.getText();
+                    jdbcTemplate.update("INSERT INTO attach (attach_name, entry_id) VALUES (?, ?)", attachName, entryId);
+                }
             }
         }
     }

@@ -19,6 +19,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.net.InetAddress;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -52,14 +53,7 @@ public class VoteController {
     @RequestMapping(value = "expert", method = RequestMethod.GET)
     public @ResponseBody
     CommonResult getExpertByIp(HttpServletRequest request) {
-        String ip = request.getHeader("X-Forward-For");
-        if (StringUtils.isEmpty(ip)) {
-            ip = request.getRemoteAddr();
-        }
-        int index = ip.indexOf(",");
-        if (index != -1) {
-            ip = ip.substring(0, index);
-        }
+        String ip = getIpAddr(request);
         Expert expert = voteService.getExpertByIp(ip);
         if (null != expert) {
             return CommonResult.success("获取专家编号成功", expert);
@@ -115,6 +109,36 @@ public class VoteController {
         int count = voteService.getUnvotedExpertCount();
         content.put("count", count);
         return CommonResult.success("获取未投票专家人数", content);
+    }
+
+    private String getIpAddr(HttpServletRequest request) {
+        String ip = request.getHeader("x-forwarded-for");
+        if(ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+            ip = request.getHeader("Proxy-Client-IP");
+        }
+        if(ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+            ip = request.getHeader("WL-Proxy-Client-IP");
+        }
+        if(ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+            ip = request.getRemoteAddr();
+            if(ip.equals("127.0.0.1")){
+                //根据网卡取本机配置的IP
+                InetAddress inet=null;
+                try {
+                    inet = InetAddress.getLocalHost();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                ip= inet.getHostAddress();
+            }
+        }
+        // 多个代理的情况，第一个IP为客户端真实IP,多个IP按照','分割
+        if(ip != null && ip.length() > 15){
+            if(ip.indexOf(",")>0){
+                ip = ip.substring(0,ip.indexOf(","));
+            }
+        }
+        return ip;
     }
 
 }

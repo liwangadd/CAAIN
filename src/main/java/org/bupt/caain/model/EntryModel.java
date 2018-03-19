@@ -22,7 +22,7 @@ public class EntryModel {
      */
     public List<Entry> queryEntriesByAwardId(int awardId) {
         List<Entry> entries = jdbcTemplate.query("SELECT id, entry_name, entry_prize, level1, level2, level3, award_id FROM entry WHERE award_id = ?",
-                new BeanPropertyRowMapper<>(Entry.class), awardId);
+                new BeanPropertyRowMapper<Entry>(Entry.class), awardId);
         return entries;
     }
 

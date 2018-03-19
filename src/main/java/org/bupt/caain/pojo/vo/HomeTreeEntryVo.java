@@ -1,9 +1,12 @@
 package org.bupt.caain.pojo.vo;
 
+import java.util.List;
+
 public class HomeTreeEntryVo {
 
     private String text;
     private boolean clickable;
+    private List<HomeTreeAttachVo> nodes;
 
     public String getText() {
         return text;
@@ -21,10 +24,20 @@ public class HomeTreeEntryVo {
         this.clickable = clickable;
     }
 
+    public List<HomeTreeAttachVo> getNodes() {
+        return nodes;
+    }
+
+    public void setNodes(List<HomeTreeAttachVo> nodes) {
+        this.nodes = nodes;
+    }
+
     @Override
     public String toString() {
-        return "EntryVo{" +
+        return "HomeTreeEntryVo{" +
                 "text='" + text + '\'' +
+                ", clickable=" + clickable +
+                ", nodes=" + nodes +
                 '}';
     }
 }

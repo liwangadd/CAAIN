@@ -18,10 +18,15 @@
 </head>
 
 <body>
+    <div>
+        <h3 style="float:right; color: red; font-family: 华文新魏; margin-right: 20px">
+            欢迎参加人工智能科学技术奖评审
+        </h3>
+    </div>
     <div class="logo" onclick="window.location.href='home'">
         <br class="clear" />
         <h1 class="logo_text">吴文俊人工智能科学技术奖评审系统</h1>
-        <h3 style="float:right;color:red;font-family:华文新魏">
+        <h3 style="float:right;color:red;font-family:华文新魏;margin-right: 20px">
             参评项目的附件在电脑桌面上
         </h3>
     </div>
@@ -33,7 +38,7 @@
             <a class="btn btn-primary" href="/vote" role="button" style="width:60px;margin-top:20px">进入</a>
         </div>
     </div>
-    <object data="../doc/技术发明2.pdf" type="application/pdf" class="right_bar">
+    <object id="pdf_viewer" data="/pdf" type="application/pdf" class="right_bar">
 
     </object>
     <div style="text-align:center; margin-top:25px;color:#747576; font-size:16px">
