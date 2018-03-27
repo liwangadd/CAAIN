@@ -10,6 +10,7 @@ import org.bupt.caain.pojo.po.Award;
 import org.bupt.caain.pojo.po.Entry;
 import org.bupt.caain.pojo.po.Expert;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -28,6 +29,9 @@ public class AdminService {
     @Autowired
     private PrintService printService;
 
+    @Value("${pdf-dir}")
+    private String pdfPath;
+
     public void clearVote() {
         expertModel.resetVote();
         entryExpertModel.deleteAll();
@@ -39,14 +43,14 @@ public class AdminService {
         Award award = awardModel.queryById(votesOfExpert.get(0).getAward_id());
         String awardName = award.getAward_name();
         System.out.println(awardName);
-        String filePath = "D:/caain/" + awardName + "/" + expert.getNum() + ".pdf";
+        String filePath = pdfPath + awardName + "/" + expert.getNum() + ".pdf";
         printService.printVoteResultPerExpert(votesOfExpert, filePath, awardName, expert.getNum());
     }
 
     public void printFinalPDF(int award_id) throws DocumentException {
         List<Entry> entries = entryModel.queryEntriesByAwardId(award_id);
         Award award = awardModel.queryById(award_id);
-        String filePath = "D:/caain/" + award.getAward_name() + "/final.pdf";
+        String filePath = pdfPath + award.getAward_name() + "/final.pdf";
         printService.printVoteResult(entries, filePath, award.getAward_name());
     }
 

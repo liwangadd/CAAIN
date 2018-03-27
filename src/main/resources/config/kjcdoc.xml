@@ -1,73 +1,75 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <kjc-doc-config>
-    <award name="自然科学奖">
-        <entry name="自然科学1">
-            <attach>附件1</attach>
-            <attach>附件2</attach>
-        </entry>
-        <entry name="自然科学2">
-            <attach>附件1</attach>
-            <attach>附件2</attach>
-        </entry>
-        <entry name="自然科学3">
-            <attach>附件1</attach>
-            <attach>附件2</attach>
-        </entry>
-    </award>
-    <award name="技术发明奖">
-        <entry name="技术发明1">
-            <attach>附件1</attach>
-            <attach>附件2</attach>
-        </entry>
-        <entry name="技术发明2">
-            <attach>附件1</attach>
-            <attach>附件2</attach>
-        </entry>
-        <entry name="技术发明3">
-            <attach>附件1</attach>
-            <attach>附件2</attach>
-        </entry>
-        <entry name="技术发明4">
-            <attach>附件1</attach>
-            <attach>附件2</attach>
-        </entry>
-        <entry name="技术发明5">
-            <attach>附件1</attach>
-            <attach>附件2</attach>
-        </entry>
-        <entry name="技术发明6">
-            <attach>附件1</attach>
-            <attach>附件2</attach>
-        </entry>
-        <entry name="技术发明7">
-            <attach>附件1</attach>
-            <attach>附件2</attach>
-        </entry>
-    </award>
-    <award name="科技进步奖">
-        <entry name="科技进步1">
-            <attach>附件1</attach>
-            <attach>附件2</attach>
-        </entry>
-        <entry name="科技进步2">
-            <attach>附件1</attach>
-            <attach>附件2</attach>
-        </entry>
-        <entry name="科技进步3">
-            <attach>附件1</attach>
-            <attach>附件2</attach>
-        </entry>
-        <entry name="科技进步4">
-            <attach>附件1</attach>
-            <attach>附件2</attach>
-        </entry>
-        <entry name="科技进步5">
-            <attach>附件1</attach>
-            <attach>附件2</attach>
-        </entry>
-        <entry name="科技进步6">
-            <attach>附件1</attach>
-            <attach>附件2</attach>
-        </entry>
-    </award>
+
+    <doc-dir>E:\\caain</doc-dir>
+    <!--<award name="自然科学奖">-->
+    <!--<entry name="自然科学1">-->
+    <!--<attach>附件1</attach>-->
+    <!--<attach>附件2</attach>-->
+    <!--</entry>-->
+    <!--<entry name="自然科学2">-->
+    <!--<attach>附件1</attach>-->
+    <!--<attach>附件2</attach>-->
+    <!--</entry>-->
+    <!--<entry name="自然科学3">-->
+    <!--<attach>附件1</attach>-->
+    <!--<attach>附件2</attach>-->
+    <!--</entry>-->
+    <!--</award>-->
+    <!--<award name="技术发明奖">-->
+    <!--<entry name="技术发明1">-->
+    <!--<attach>附件1</attach>-->
+    <!--<attach>附件2</attach>-->
+    <!--</entry>-->
+    <!--<entry name="技术发明2">-->
+    <!--<attach>附件1</attach>-->
+    <!--<attach>附件2</attach>-->
+    <!--</entry>-->
+    <!--<entry name="技术发明3">-->
+    <!--<attach>附件1</attach>-->
+    <!--<attach>附件2</attach>-->
+    <!--</entry>-->
+    <!--<entry name="技术发明4">-->
+    <!--<attach>附件1</attach>-->
+    <!--<attach>附件2</attach>-->
+    <!--</entry>-->
+    <!--<entry name="技术发明5">-->
+    <!--<attach>附件1</attach>-->
+    <!--<attach>附件2</attach>-->
+    <!--</entry>-->
+    <!--<entry name="技术发明6">-->
+    <!--<attach>附件1</attach>-->
+    <!--<attach>附件2</attach>-->
+    <!--</entry>-->
+    <!--<entry name="技术发明7">-->
+    <!--<attach>附件1</attach>-->
+    <!--<attach>附件2</attach>-->
+    <!--</entry>-->
+    <!--</award>-->
+    <!--<award name="科技进步奖">-->
+    <!--<entry name="科技进步1">-->
+    <!--<attach>附件1</attach>-->
+    <!--<attach>附件2</attach>-->
+    <!--</entry>-->
+    <!--<entry name="科技进步2">-->
+    <!--<attach>附件1</attach>-->
+    <!--<attach>附件2</attach>-->
+    <!--</entry>-->
+    <!--<entry name="科技进步3">-->
+    <!--<attach>附件1</attach>-->
+    <!--<attach>附件2</attach>-->
+    <!--</entry>-->
+    <!--<entry name="科技进步4">-->
+    <!--<attach>附件1</attach>-->
+    <!--<attach>附件2</attach>-->
+    <!--</entry>-->
+    <!--<entry name="科技进步5">-->
+    <!--<attach>附件1</attach>-->
+    <!--<attach>附件2</attach>-->
+    <!--</entry>-->
+    <!--<entry name="科技进步6">-->
+    <!--<attach>附件1</attach>-->
+    <!--<attach>附件2</attach>-->
+    <!--</entry>-->
+    <!--</award>-->
 </kjc-doc-config>

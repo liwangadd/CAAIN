@@ -1,4 +1,4 @@
-let award_id = 1;
+let awardId = 1;
 let awards_ids = [];
 let expert_id = 0;
 let fetchUnvoteInterval;
@@ -33,8 +33,8 @@ $(function () {
                 let award_div = $("#awards_btn");
                 if (result['code'] !== 'FAILURE') {
                     content = result['content'];
-                    award_id = content[0]['id'];
-                    fetchEntriesForType(award_id);
+                    awardId = content[0]['id'];
+                    fetchEntriesForType(awardId);
                     content.forEach(function (award) {
                         awards_ids.push(award['id']);
                         award_div.append(`<button id="award_btn_${award['id']}" name="${award['id']}" class="btn btn-default award_btn">${award['award_name']}</button>`)
@@ -98,6 +98,7 @@ $(function () {
                         <td></td>
                     </tr>`)
                     }
+                    awardId = award_id;
                 } else {
                     toastr.options.timeout = 2000;
                     toastr.error(result['reason']);
@@ -150,7 +151,7 @@ $(function () {
                 entry_expert['level2'] = level2;
                 entry_expert['level3'] = level3;
                 entry_expert['entry_prize'] = prize;
-                entry_expert['award_id'] = award_id;
+                entry_expert['award_id'] = awardId;
                 entry_expert['entry_name'] = entry_name;
                 vote_result.push(entry_expert);
             });
@@ -178,7 +179,7 @@ $(function () {
 
     function showResult() {
         $.ajax({
-            url: '/vote/result/' + award_id,
+            url: '/vote/result/' + awardId,
             type: 'GET',
             success: (result) => {
                 console.log(result);
