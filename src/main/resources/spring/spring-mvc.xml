@@ -19,6 +19,12 @@
         <property name="suffix" value=".jsp"/>
     </bean>
 
+    <mvc:cors>
+        <mvc:mapping path="/**"
+                     allowed-origins="http://localhost:8080"
+                     allowed-methods="GET,PUT,DELETE,POST,HEAD"/>
+    </mvc:cors>
+
     <mvc:resources mapping="/css/**" location="/css/"/>
     <mvc:resources mapping="/script/**" location="/script/"/>
     <mvc:resources mapping="/img/**" location="/image/"/>
