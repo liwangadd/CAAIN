@@ -59,7 +59,7 @@ public class VoteService {
                     entryModel.updateLevelById(entry);
                 }
             }
-            expertModel.updateById(expert.getId());
+            expertModel.updateById(true, expert.getId());
             return true;
         }
         return false;

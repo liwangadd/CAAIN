@@ -4,6 +4,9 @@ import javax.servlet.*;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+/**
+ * 跨域访问拦截器，实现前后端分离
+ */
 public class CrossOriginFilter implements Filter {
 
     @Override

@@ -18,27 +18,27 @@ public class ViewDataController {
     private JdbcTemplate jdbcTemplate;
 
     @RequestMapping("/entry")
-    public List<Entry> viewEntry(){
+    public List<Entry> viewEntry() {
         return jdbcTemplate.query("SELECT * FROM entry", new BeanPropertyRowMapper<Entry>(Entry.class));
     }
 
     @RequestMapping("/award")
-    public List<Award> viewAward(){
+    public List<Award> viewAward() {
         return jdbcTemplate.query("SELECT * FROM award", new BeanPropertyRowMapper<Award>(Award.class));
     }
 
     @RequestMapping("/attach")
-    public List<Attach> viewAttach(){
+    public List<Attach> viewAttach() {
         return jdbcTemplate.query("SELECT * FROM attach", new BeanPropertyRowMapper<Attach>(Attach.class));
     }
 
     @RequestMapping("/expert")
-    public List<Expert> viewExpert(){
+    public List<Expert> viewExpert() {
         return jdbcTemplate.query("SELECT * FROM expert", new BeanPropertyRowMapper<Expert>(Expert.class));
     }
 
     @RequestMapping("/entry_expert")
-    public List<EntryExpert> viewEntryExpert(){
+    public List<EntryExpert> viewEntryExpert() {
         return jdbcTemplate.query("SELECT * FROM entry_expert", new BeanPropertyRowMapper<EntryExpert>(EntryExpert.class));
     }
 

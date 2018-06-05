@@ -2,7 +2,7 @@ package org.bupt.caain.pojo.jo;
 
 import org.bupt.caain.pojo.po.EntryExpert;
 
-public class VotePerExpert extends EntryExpert{
+public class VotePerExpert extends EntryExpert {
     private String entry_name;
     private String entry_prize;
     private int award_id;

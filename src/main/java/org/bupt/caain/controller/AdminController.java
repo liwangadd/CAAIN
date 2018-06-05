@@ -33,7 +33,7 @@ public class AdminController {
     @RequestMapping(value = "/pdf/{award_id}", method = RequestMethod.POST)
     public @ResponseBody
     CommonResult buildFinalPDF(@PathVariable int award_id) {
-        if(!voteService.isVotedDown()){
+        if (!voteService.isVotedDown()) {
             return CommonResult.failure("投票还未结束");
         }
         try {
