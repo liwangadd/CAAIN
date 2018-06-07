@@ -4,6 +4,8 @@ public class Entry {
     private int id;
     private String entry_name;
     private String entry_prize;
+    private String entry_application;
+    private String application_path;
     private int level1;
     private int level2;
     private int level3;
@@ -65,12 +67,30 @@ public class Entry {
         this.entry_prize = entry_prize;
     }
 
+    public String getEntry_application() {
+        return entry_application;
+    }
+
+    public void setEntry_application(String entry_application) {
+        this.entry_application = entry_application;
+    }
+
+    public String getApplication_path() {
+        return application_path;
+    }
+
+    public void setApplication_path(String application_path) {
+        this.application_path = application_path;
+    }
+
     @Override
     public String toString() {
         return "Entry{" +
                 "id=" + id +
                 ", entry_name='" + entry_name + '\'' +
                 ", entry_prize='" + entry_prize + '\'' +
+                ", entry_application='" + entry_application + '\'' +
+                ", application_path='" + application_path + '\'' +
                 ", level1=" + level1 +
                 ", level2=" + level2 +
                 ", level3=" + level3 +

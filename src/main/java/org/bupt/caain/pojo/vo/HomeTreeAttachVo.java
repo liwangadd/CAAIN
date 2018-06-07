@@ -4,6 +4,7 @@ public class HomeTreeAttachVo {
 
     private int id;
     private String text;
+    private String file_path;
     private int entry_id;
     private boolean clickable;
 
@@ -39,11 +40,20 @@ public class HomeTreeAttachVo {
         this.clickable = clickable;
     }
 
+    public String getFile_path() {
+        return file_path;
+    }
+
+    public void setFile_path(String file_path) {
+        this.file_path = file_path;
+    }
+
     @Override
     public String toString() {
         return "HomeTreeAttachVo{" +
                 "id=" + id +
                 ", text='" + text + '\'' +
+                ", file_path='" + file_path + '\'' +
                 ", entry_id=" + entry_id +
                 ", clickable=" + clickable +
                 '}';

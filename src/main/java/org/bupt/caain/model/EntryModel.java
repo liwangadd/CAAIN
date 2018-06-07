@@ -21,8 +21,8 @@ public class EntryModel {
      * @return
      */
     public List<Entry> queryEntriesByAwardId(int awardId) {
-        List<Entry> entries = jdbcTemplate.query("SELECT id, entry_name, entry_prize, level1, level2, level3, award_id FROM entry WHERE award_id = ?",
-                new BeanPropertyRowMapper<Entry>(Entry.class), awardId);
+        List<Entry> entries = jdbcTemplate.query("SELECT id, entry_name, entry_prize, entry_application, application_path, level1, level2, level3, award_id FROM entry WHERE award_id = ?",
+                new BeanPropertyRowMapper<>(Entry.class), awardId);
         return entries;
     }
 
@@ -47,8 +47,8 @@ public class EntryModel {
     }
 
     public Entry queryById(int id) {
-        List<Entry> entries = jdbcTemplate.query("SELECT id, entry_name, entry_prize, level1, level2, level3, award_id FROM entry WHERE id = ?",
-                new BeanPropertyRowMapper<Entry>(Entry.class), id);
+        List<Entry> entries = jdbcTemplate.query("SELECT id, entry_name, entry_prize, entry_application, application_path, level1, level2, level3, award_id FROM entry WHERE id = ?",
+                new BeanPropertyRowMapper<>(Entry.class), id);
         if (null != entries && entries.size() > 0) {
             return entries.get(0);
         }

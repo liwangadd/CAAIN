@@ -1,5 +1,6 @@
 package org.bupt.caain.service;
 
+import org.bupt.caain.utils.FileUtils;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.Element;
@@ -15,6 +16,7 @@ import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.FileSystemUtils;
 import org.springframework.util.ResourceUtils;
+import org.springframework.util.StringUtils;
 
 import javax.annotation.PostConstruct;
 import java.io.File;
@@ -64,18 +66,20 @@ public class XmlToDatabaseService {
 //        Element rootElement = getRootElement("classpath:config/kjcdoc.xml");
         File caainDir = new File(docPath);
         if (!caainDir.exists() || caainDir.isFile()) {
-            logger.error("文件夹不存在");
-            throw new FileNotFoundException("文件夹不存在");
+            logger.error("奖项文件夹不存在");
+            throw new FileNotFoundException("奖项文件夹不存在");
         }
         File[] awardDirs = caainDir.listFiles(File::isDirectory);
         if (awardDirs != null && awardDirs.length > 0) {
             for (File awardDir : awardDirs) {
-                insertAward(awardDir);
+                insertAward(awardDir, awardDir.getName());
             }
         }
     }
 
-    private void insertAward(File awardDir) {
+    // 插入奖项信息
+    private void insertAward(File awardDir, String awardPath) {
+        //插入奖项信息并返回奖项ID
         String awardName = awardDir.getName();
         KeyHolder awardKeyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(connection -> {
@@ -84,15 +88,20 @@ public class XmlToDatabaseService {
             return ps;
         }, awardKeyHolder);
         int awardId = awardKeyHolder.getKey().intValue();
+
+        // 获取奖项下的所有申请项目
         File[] entryDirs = awardDir.listFiles(File::isDirectory);
+        // 插入项目信息
         if (entryDirs != null && entryDirs.length > 0) {
             for (File entryDir : entryDirs) {
-                insertEntry(awardId, entryDir);
+                insertEntry(awardId, entryDir, awardPath + "/" + entryDir.getName());
             }
         }
     }
 
-    private void insertEntry(int awardId, File entryDir) {
+    //插入项目信息
+    private void insertEntry(int awardId, File entryDir, String entryPath) {
+        // 插入项目信息并返回奖项ID
         String entryName = entryDir.getName();
         KeyHolder entryKeyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(connection -> {
@@ -102,19 +111,33 @@ public class XmlToDatabaseService {
             return statement;
         }, entryKeyHolder);
         int entryId = Integer.parseInt(entryKeyHolder.getKeys().get("ID").toString());
-        File[] attachFiles = entryDir.listFiles(pathname -> pathname.getName().endsWith(".pdf"));
-        if (attachFiles != null && attachFiles.length > 0) {
+
+        // 更新项目申请书名称和申请书地址
+        File[] applicationFiles = entryDir.listFiles(pathname -> pathname.getName().endsWith(".pdf"));
+        if (applicationFiles != null && applicationFiles.length > 0) {
+            File applicationFile = applicationFiles[0];
+            String applicationPath = entryPath + "/" + applicationFile.getName();
+            jdbcTemplate.update("UPDATE entry SET entry_application = ?, application_path = ? WHERE id = ?",
+                    FileUtils.getFileNameNoExtension(applicationFile.getName()),
+                    applicationPath,
+                    entryId);
+        }
+
+        // 持久化申请项目的所有附件
+        File attachDir = new File(entryDir.getAbsolutePath() + "/附件");
+        File[] attachFiles = attachDir.listFiles(pathname -> pathname.getName().endsWith(".pdf"));
+        if (attachFiles.length > 0) {
             for (File attachFile : attachFiles) {
-                insertAttach(entryId, attachFile);
+                insertAttach(entryId, attachFile, entryPath + "/附件");
             }
         }
     }
 
-    private void insertAttach(int entryId, File attachFile) {
-        String attachNameWithExt = attachFile.getName();
-        int lastIndexDot = attachNameWithExt.lastIndexOf(".");
-        String attachName = attachNameWithExt.substring(0, lastIndexDot);
-        jdbcTemplate.update("INSERT INTO attach (attach_name, entry_id) VALUES (?, ?)", attachName, entryId);
+    // 持久化附件信息
+    private void insertAttach(int entryId, File attachFile, String attachDirPath) {
+        String attachName = FileUtils.getFileNameNoExtension(attachFile);
+        String attachPath = attachDirPath + "/" + attachFile.getName();
+        jdbcTemplate.update("INSERT INTO attach (attach_name, attach_path, entry_id) VALUES (?, ?, ?)", attachName, attachPath, entryId);
     }
 
 //        List<Element> awardElements = rootElement.elements("award");

@@ -43,10 +43,11 @@ public class HomeTreeAwardVO {
 
     @Override
     public String toString() {
-        return "AwardVO{" +
+        return "HomeTreeAwardVO{" +
                 "id=" + id +
                 ", text='" + text + '\'' +
                 ", nodes=" + nodes +
+                ", clickable=" + clickable +
                 '}';
     }
 }

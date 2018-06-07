@@ -1,12 +1,9 @@
 package org.bupt.caain.service;
 
-import com.itextpdf.text.DocumentException;
-import org.bupt.caain.model.AwardModel;
 import org.bupt.caain.model.EntryExpertModel;
 import org.bupt.caain.model.EntryModel;
 import org.bupt.caain.model.ExpertModel;
 import org.bupt.caain.pojo.jo.VotePerExpert;
-import org.bupt.caain.pojo.po.Award;
 import org.bupt.caain.pojo.po.Entry;
 import org.bupt.caain.pojo.po.Expert;
 import org.bupt.caain.pojo.vo.VoteVo;
@@ -51,7 +48,7 @@ public class VoteService {
         if (expert != null && expert.getVoted() != 1) {
             for (VotePerExpert votePerExpert : votesOfExpert) {
                 if (entryExpertModel.queryByEntryAndExpert(votePerExpert) == null && votePerExpert.getExpert_id() != 0) {
-                    entryExpertModel.insert(votePerExpert);
+                    entryExpertModel.add(votePerExpert);
                     Entry entry = entryModel.queryById(votePerExpert.getEntry_id());
                     entry.setLevel1(entry.getLevel1() + votePerExpert.getLevel1());
                     entry.setLevel2(entry.getLevel2() + votePerExpert.getLevel2());

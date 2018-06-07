@@ -21,7 +21,7 @@ public class AttachModel {
      * @return 附件列表
      */
     public List<Attach> queryByEntryId(int entryId){
-        return jdbcTemplate.query("SELECT id, attach_name, entry_id FROM attach WHERE entry_id = ?", new BeanPropertyRowMapper<>(Attach.class),
+        return jdbcTemplate.query("SELECT id, attach_name, attach_path, entry_id FROM attach WHERE entry_id = ?", new BeanPropertyRowMapper<>(Attach.class),
                 entryId);
     }
 
@@ -31,7 +31,7 @@ public class AttachModel {
      * @return 附件信息
      */
     public Attach queryById(int id){
-        List<Attach> attaches = jdbcTemplate.query("SELECT id, attach_name, entry_id FROM attach WHERE id = ?", new BeanPropertyRowMapper<>(Attach.class), id);
+        List<Attach> attaches = jdbcTemplate.query("SELECT id, attach_name, attach_path, entry_id FROM attach WHERE id = ?", new BeanPropertyRowMapper<>(Attach.class), id);
         if(attaches!=null&&attaches.size()>0){
             return attaches.get(0);
         }else{

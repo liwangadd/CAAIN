@@ -6,7 +6,7 @@ public class HomeTreeEntryVo {
 
     private String text;
     private boolean clickable;
-    private List<HomeTreeAttachVo> nodes;
+    private List<HomeTreeEntryContent> nodes;
 
     public String getText() {
         return text;
@@ -24,11 +24,11 @@ public class HomeTreeEntryVo {
         this.clickable = clickable;
     }
 
-    public List<HomeTreeAttachVo> getNodes() {
+    public List<HomeTreeEntryContent> getNodes() {
         return nodes;
     }
 
-    public void setNodes(List<HomeTreeAttachVo> nodes) {
+    public void setNodes(List<HomeTreeEntryContent> nodes) {
         this.nodes = nodes;
     }
 

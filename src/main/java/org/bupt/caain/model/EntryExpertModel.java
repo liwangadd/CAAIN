@@ -18,7 +18,7 @@ public class EntryExpertModel {
      * 插入专家评奖信息
      * @param entryExpert 评奖内容
      */
-    public void insert(EntryExpert entryExpert) {
+    public void add(EntryExpert entryExpert) {
         jdbcTemplate.update("INSERT INTO entry_expert(entry_id, expert_id, level1, level2, level3) VALUES (?, ?, ?, ?, ?)",
                 entryExpert.getEntry_id(), entryExpert.getExpert_id(), entryExpert.getLevel1(), entryExpert.getLevel2(),
                 entryExpert.getLevel3());

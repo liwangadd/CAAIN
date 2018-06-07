@@ -32,12 +32,14 @@ public class AdminService {
     @Value("${pdf-dir}")
     private String pdfPath;
 
+    // 清空投票结果
     public void clearVote() {
         expertModel.resetVote();
         entryExpertModel.deleteAll();
         entryModel.resetAll();
     }
 
+    //生成每个专家的投票结果pdf文件
     public void printVotesPerExpert(List<VotePerExpert> votesOfExpert) throws DocumentException {
         Expert expert = expertModel.queryById(votesOfExpert.get(0).getExpert_id());
         Award award = awardModel.queryById(votesOfExpert.get(0).getAward_id());
@@ -47,6 +49,11 @@ public class AdminService {
         printService.printVoteResultPerExpert(votesOfExpert, filePath, awardName, expert.getNum());
     }
 
+    /**
+     * 生成每个奖项的最终投票结果pdf文件
+     * @param award_id 奖项id
+     * @throws DocumentException
+     */
     public void printFinalPDF(int award_id) throws DocumentException {
         List<Entry> entries = entryModel.queryEntriesByAwardId(award_id);
         Award award = awardModel.queryById(award_id);

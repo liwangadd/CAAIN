@@ -3,6 +3,7 @@ package org.bupt.caain.pojo.po;
 public class Attach {
     private int id;
     private String attach_name;
+    private String attach_path;
     private int entry_id;
 
     public int getId() {
@@ -29,11 +30,20 @@ public class Attach {
         this.entry_id = entry_id;
     }
 
+    public String getAttach_path() {
+        return attach_path;
+    }
+
+    public void setAttach_path(String attach_path) {
+        this.attach_path = attach_path;
+    }
+
     @Override
     public String toString() {
         return "Attach{" +
                 "id=" + id +
                 ", attach_name='" + attach_name + '\'' +
+                ", attach_path='" + attach_path + '\'' +
                 ", entry_id=" + entry_id +
                 '}';
     }
