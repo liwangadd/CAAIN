@@ -1,5 +1,14 @@
 package org.bupt.caain.service;
 
+import com.sun.org.apache.xpath.internal.functions.FuncFalse;
+import org.bupt.caain.model.AttachModel;
+import org.bupt.caain.model.AwardModel;
+import org.bupt.caain.model.EntryModel;
+import org.bupt.caain.model.ExpertModel;
+import org.bupt.caain.pojo.po.Attach;
+import org.bupt.caain.pojo.po.Award;
+import org.bupt.caain.pojo.po.Entry;
+import org.bupt.caain.pojo.po.Expert;
 import org.bupt.caain.utils.FileUtils;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
@@ -26,6 +35,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 
 @Service
@@ -34,7 +44,16 @@ public class XmlToDatabaseService {
     private Logger logger = LoggerFactory.getLogger(XmlToDatabaseService.class);
 
     @Autowired
-    private JdbcTemplate jdbcTemplate;
+    private AwardModel awardModel;
+
+    @Autowired
+    private ExpertModel expertModel;
+
+    @Autowired
+    private EntryModel entryModel;
+
+    @Autowired
+    private AttachModel attachModel;
 
     @Value("${doc-dir}")
     private String docPath;
@@ -54,11 +73,13 @@ public class XmlToDatabaseService {
 
     private void parseExpert() throws FileNotFoundException, DocumentException {
         Element rootElement = getRootElement("classpath:config/kjcexpert.xml");
-        List<Element> expertElements = rootElement.elements("expert");
-        for (Element expertElement : expertElements) {
+        Iterator expertIterator = rootElement.elementIterator("expert");
+        while (expertIterator.hasNext()) {
+            Element expertElement = (Element) expertIterator.next();
             String no = expertElement.elementText("no");
             String ip = expertElement.elementText("ip");
-            jdbcTemplate.update("INSERT INTO expert (num, ip) VALUES (?, ?)", no, ip);
+            Expert expert = new Expert(no, ip, 0);
+            expertModel.add(expert);
         }
     }
 
@@ -80,14 +101,8 @@ public class XmlToDatabaseService {
     // 插入奖项信息
     private void insertAward(File awardDir, String awardPath) {
         //插入奖项信息并返回奖项ID
-        String awardName = awardDir.getName();
-        KeyHolder awardKeyHolder = new GeneratedKeyHolder();
-        jdbcTemplate.update(connection -> {
-            PreparedStatement ps = connection.prepareStatement("INSERT INTO award (award_name) VALUES (?)", new int[]{1});
-            ps.setString(1, awardName);
-            return ps;
-        }, awardKeyHolder);
-        int awardId = awardKeyHolder.getKey().intValue();
+        Award award = new Award(awardDir.getName());
+        int awardId = awardModel.addAndGetId(award);
 
         // 获取奖项下的所有申请项目
         File[] entryDirs = awardDir.listFiles(File::isDirectory);
@@ -103,25 +118,17 @@ public class XmlToDatabaseService {
     private void insertEntry(int awardId, File entryDir, String entryPath) {
         // 插入项目信息并返回奖项ID
         String entryName = entryDir.getName();
-        KeyHolder entryKeyHolder = new GeneratedKeyHolder();
-        jdbcTemplate.update(connection -> {
-            PreparedStatement statement = connection.prepareStatement("INSERT INTO entry (entry_name, award_id) VALUES (?, ?)", new int[]{1, 2});
-            statement.setString(1, entryName);
-            statement.setInt(2, awardId);
-            return statement;
-        }, entryKeyHolder);
-        int entryId = Integer.parseInt(entryKeyHolder.getKeys().get("ID").toString());
+        Entry entry = new Entry(entryName, awardId);
 
         // 更新项目申请书名称和申请书地址
         File[] applicationFiles = entryDir.listFiles(pathname -> pathname.getName().endsWith(".pdf"));
         if (applicationFiles != null && applicationFiles.length > 0) {
             File applicationFile = applicationFiles[0];
             String applicationPath = entryPath + "/" + applicationFile.getName();
-            jdbcTemplate.update("UPDATE entry SET entry_application = ?, application_path = ? WHERE id = ?",
-                    FileUtils.getFileNameNoExtension(applicationFile.getName()),
-                    applicationPath,
-                    entryId);
+            entry.setEntry_application(FileUtils.getFileNameNoExtension(applicationFile.getName()));
+            entry.setApplication_path(applicationPath);
         }
+        int entryId = entryModel.addAndGetId(entry);
 
         // 持久化申请项目的所有附件
         File attachDir = new File(entryDir.getAbsolutePath() + "/附件");
@@ -137,7 +144,9 @@ public class XmlToDatabaseService {
     private void insertAttach(int entryId, File attachFile, String attachDirPath) {
         String attachName = FileUtils.getFileNameNoExtension(attachFile);
         String attachPath = attachDirPath + "/" + attachFile.getName();
-        jdbcTemplate.update("INSERT INTO attach (attach_name, attach_path, entry_id) VALUES (?, ?, ?)", attachName, attachPath, entryId);
+
+        Attach attach = new Attach(attachName, attachPath, entryId);
+        attachModel.add(attach);
     }
 
 //        List<Element> awardElements = rootElement.elements("award");

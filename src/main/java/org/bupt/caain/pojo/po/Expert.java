@@ -7,6 +7,15 @@ public class Expert {
     private String ip;
     private int voted;
 
+    public Expert(String num, String ip, int voted) {
+        this.num = num;
+        this.ip = ip;
+        this.voted = voted;
+    }
+
+    public Expert() {
+    }
+
     public int getId() {
         return id;
     }

@@ -6,6 +6,14 @@ public class Attach {
     private String attach_path;
     private int entry_id;
 
+    public Attach(){}
+
+    public Attach(String attach_name, String attach_path, int entry_id) {
+        this.attach_name = attach_name;
+        this.attach_path = attach_path;
+        this.entry_id = entry_id;
+    }
+
     public int getId() {
         return id;
     }

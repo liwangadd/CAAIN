@@ -5,6 +5,12 @@ public class Award {
     private int id;
     private String award_name;
 
+    public Award(){}
+
+    public Award(String award_name) {
+        this.award_name = award_name;
+    }
+
     public int getId() {
         return id;
     }

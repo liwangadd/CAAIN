@@ -4,8 +4,11 @@ import org.bupt.caain.pojo.po.Entry;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
+import java.sql.PreparedStatement;
 import java.util.List;
 
 @Repository
@@ -13,6 +16,26 @@ public class EntryModel {
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
+
+    public int addAndGetId(Entry entry){
+        KeyHolder entryKeyHolder = new GeneratedKeyHolder();
+        jdbcTemplate.update(connection -> {
+            PreparedStatement statement = connection.prepareStatement(
+                    "INSERT INTO entry (entry_name, entry_prize, entry_application, application_path, level1, level2, level3, award_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+                    new int[]{1, 2, 3, 4, 5, 6, 7, 8});
+            statement.setString(1, entry.getEntry_name());
+            statement.setString(2, entry.getEntry_prize());
+            statement.setString(3, entry.getEntry_application());
+            statement.setString(4, entry.getApplication_path());
+            statement.setInt(5, entry.getLevel1());
+            statement.setInt(6, entry.getLevel2());
+            statement.setInt(7, entry.getLevel3());
+            statement.setInt(8, entry.getAward_id());
+            return statement;
+        }, entryKeyHolder);
+        int entryId = Integer.parseInt(entryKeyHolder.getKeys().get("ID").toString());
+        return entryId;
+    }
 
     /**
      * 根据award_id字段获取参赛作品
@@ -64,7 +87,7 @@ public class EntryModel {
         jdbcTemplate.update("UPDATE entry SET entry_prize='', level1 = 0, level2 = 0, level3 = 0");
     }
 
-    public void deleteByAwardId(int awardId) {
+    public void resetByAwardId(int awardId) {
         jdbcTemplate.update("UPDATE entry SET entry_prize='', level1 = 0, level2 = 0, level3 = 0 WHERE award_id = ?", awardId);
     }
 }

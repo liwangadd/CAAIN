@@ -15,6 +15,11 @@ public class AttachModel {
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
+    public void add(Attach attach){
+        jdbcTemplate.update("INSERT INTO attach (attach_name, attache_path, entry_id) VALUES (?, ?, ?)",
+                attach.getAttach_name(), attach.getAttach_path(), attach.getEntry_id());
+    }
+
     /**
      * 根据申请作品id获取作品中的附件
      * @param entryId 作品id

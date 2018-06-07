@@ -11,6 +11,25 @@ public class Entry {
     private int level3;
     private int award_id;
 
+    public Entry(){}
+
+    public Entry(String entry_name, int award_id) {
+        this.entry_name = entry_name;
+        this.award_id = award_id;
+    }
+
+    public Entry(int id, String entry_name, String entry_prize, String entry_application, String application_path, int level1, int level2, int level3, int award_id) {
+        this.id = id;
+        this.entry_name = entry_name;
+        this.entry_prize = entry_prize;
+        this.entry_application = entry_application;
+        this.application_path = application_path;
+        this.level1 = level1;
+        this.level2 = level2;
+        this.level3 = level3;
+        this.award_id = award_id;
+    }
+
     public int getId() {
         return id;
     }

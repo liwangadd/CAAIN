@@ -1,5 +1,6 @@
 package org.bupt.caain.model;
 
+import org.aspectj.weaver.ast.Expr;
 import org.bupt.caain.pojo.po.Expert;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
@@ -13,6 +14,10 @@ public class ExpertModel {
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
+
+    public void add(Expert expert){
+        jdbcTemplate.update("INSERT INTO expert (num, ip, voted) VALUES (?, ?)", expert.getNum(), expert.getIp(), expert.getVoted());
+    }
 
     /**
      * 获取专家总人数

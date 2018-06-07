@@ -30,7 +30,8 @@ public class EntryExpertModel {
      * @return 评奖结果
      */
     public EntryExpert queryByEntryAndExpert(EntryExpert entryExpert) {
-        List<EntryExpert> entryExperts = jdbcTemplate.query("SELECT * FROM entry_expert WHERE entry_id = ? AND expert_id = ?", new BeanPropertyRowMapper<>(EntryExpert.class),
+        List<EntryExpert> entryExperts = jdbcTemplate.query("SELECT entry_id, expert_id, level1, level2, level3 FROM entry_expert WHERE entry_id = ? AND expert_id = ?",
+                new BeanPropertyRowMapper<>(EntryExpert.class),
                 entryExpert.getEntry_id(), entryExpert.getExpert_id());
         if (null != entryExperts && entryExperts.size() > 0) {
             return entryExperts.get(0);
