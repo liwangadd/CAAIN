@@ -5,6 +5,26 @@ let fetchUnvoteInterval;
 
 $(function () {
 
+    $.ajax({
+        url: "/expert",
+        type: 'GET',
+        contentType: 'application/json',
+        dataType: 'json',
+        success: (result) => {
+            if (result['code'] === 'FAILURE') {
+                toastr.options.timeout = 2000;
+                toastr.error(result['reason']);
+                $('#submitVote').attr('disabled', 'disabled');
+            } else {
+                fetchAwardTypes();
+                expert_id = result['content']['id'];
+                if (result['content']['voted'] === 1) {
+                    $('#submitVote').attr('disabled', 'disabled');
+                }
+            }
+        }
+    });
+
     toastr.options = {
         "closeButton": false,
         "debug": false,
@@ -44,30 +64,14 @@ $(function () {
                             fetchEntriesForType(awards_ids[i - 1]);
                         })
                     }
+                }else{
+                    $('#submitVote').attr('disabled', 'disabled');
+                    toastr.options.timeout = 2000;
+                    toastr.error(result['reason']);
                 }
             }
         });
     }
-
-    $.ajax({
-        url: "/expert",
-        type: 'GET',
-        contentType: 'application/json',
-        dataType: 'json',
-        success: (result) => {
-            if (result['code'] === 'FAILURE') {
-                toastr.options.timeout = 2000;
-                toastr.error(result['reason']);
-                $('#submitVote').attr('disabled', 'disabled');
-            } else {
-                fetchAwardTypes();
-                expert_id = result['content']['id'];
-                if (result['content']['voted'] === 1) {
-                    $('#submitVote').attr('disabled', 'disabled');
-                }
-            }
-        }
-    });
 
     function fetchEntriesForType(award_id) {
         $.ajax({

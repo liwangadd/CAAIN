@@ -21,22 +21,27 @@ $(function () {
     };
 
     $.ajax({
-        url: '/awards',
+        url: '/admin/awards',
         type: 'GET',
         contentType: 'application/json',
         dataType: 'json',
         success: (result) => {
             let award_div = $("#pdf_btn_group");
+            let vote_div = $("#vote_btn_group");
             if (result['code'] !== 'FAILURE') {
                 content = result['content'];
                 content.forEach(function (award) {
                     award_ids.push(award['id']);
-                    award_div.append(`<button id="award_btn_${award['id']}" class="btn btn-primary" style="margin-left: 8px">${award['award_name']}PDF</button>`)
+                    award_div.append(`<button id="award_btn_${award['id']}" class="btn btn-primary" style="margin-left: 8px">${award['award_name'].substr(1)}PDF</button>`)
+                    vote_div.append(`<button id="vote_btn_${award['id']}" class="btn btn-primary" style="margin-left: 8px">开启${award['award_name'].substr(1)}投票</button>`)
                 });
                 for (let i = 1, len = content.length; i <= len; ++i) {
                     $(`#award_btn_${i}`).on('click', () => {
                         buildFinalPDF(award_ids[i - 1]);
-                    })
+                    });
+                    $(`#vote_btn_${i}`).on('click', ()=>{
+                        startVote(award_ids[i-1]);
+                    });
                 }
             }
         }
@@ -51,6 +56,20 @@ $(function () {
             }
         })
     });
+
+    function startVote(award_id) {
+        $.ajax({
+            url: '/admin/start_vote/' + award_id,
+            type: 'POST',
+            success: (result)=>{
+                if(result['code'] === 'SUCCESS'){
+                    toastr.info(result['reason']);
+                }else{
+                    toastr.info(result['reason']);
+                }
+            }
+        })
+    }
 
     function buildFinalPDF(award_id) {
         $.ajax({

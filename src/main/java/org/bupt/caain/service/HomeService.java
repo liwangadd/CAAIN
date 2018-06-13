@@ -74,9 +74,8 @@ public class HomeService {
         return awardVOs;
     }
 
-    // 获取所有奖项
-    public List<Award> getAwards() {
-        return awardModel.queryAll();
+    public List<Award> getVoteAwards(){
+        return awardModel.queryVoteAwards();
     }
 
 }

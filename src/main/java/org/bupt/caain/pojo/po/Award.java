@@ -4,6 +4,7 @@ public class Award {
 
     private int id;
     private String award_name;
+    private boolean voted;
 
     public Award(){}
 
@@ -27,11 +28,20 @@ public class Award {
         this.award_name = award_name;
     }
 
+    public boolean isVoted() {
+        return voted;
+    }
+
+    public void setVoted(boolean voted) {
+        this.voted = voted;
+    }
+
     @Override
     public String toString() {
         return "Award{" +
                 "id=" + id +
                 ", award_name='" + award_name + '\'' +
+                ", voted=" + voted +
                 '}';
     }
 }

@@ -102,6 +102,7 @@ public class XmlToDatabaseService {
     private void insertAward(File awardDir, String awardPath) {
         //插入奖项信息并返回奖项ID
         Award award = new Award(awardDir.getName());
+        award.setVoted(false);
         int awardId = awardModel.addAndGetId(award);
 
         // 获取奖项下的所有申请项目

@@ -42,11 +42,11 @@ public class VoteController {
     @RequestMapping(value = "awards", method = RequestMethod.GET)
     public @ResponseBody
     CommonResult getAwards() {
-        List<Award> awards = homeService.getAwards();
+        List<Award> awards = homeService.getVoteAwards();
         if (null != awards && awards.size() > 0) {
             return CommonResult.success("获取全部奖项", awards);
         } else {
-            return CommonResult.failure("获取奖项失败");
+            return CommonResult.failure("投票还未开始");
         }
     }
 
@@ -54,6 +54,7 @@ public class VoteController {
     public @ResponseBody
     CommonResult getExpertByIp(HttpServletRequest request) {
         String ip = getIpAddr(request);
+        System.out.println(ip);
         Expert expert = voteService.getExpertByIp(ip);
         if (null != expert) {
             return CommonResult.success("获取专家编号成功", expert);
@@ -77,6 +78,9 @@ public class VoteController {
     public @ResponseBody
     CommonResult votePerExpert(@RequestBody List<VotePerExpert> votesOfExpert) {
         System.out.println(votesOfExpert);
+        if(votesOfExpert.size()==0){
+            return CommonResult.failure("投票信息不完整");
+        }
         boolean isSuccess = voteService.votePerExpert(votesOfExpert);
         if (isSuccess) {
             try {

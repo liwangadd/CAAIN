@@ -16,7 +16,7 @@ public class ExpertModel {
     private JdbcTemplate jdbcTemplate;
 
     public void add(Expert expert){
-        jdbcTemplate.update("INSERT INTO expert (num, ip, voted) VALUES (?, ?)", expert.getNum(), expert.getIp(), expert.getVoted());
+        jdbcTemplate.update("INSERT INTO expert (num, ip, voted) VALUES (?, ?, ?)", expert.getNum(), expert.getIp(), expert.getVoted());
     }
 
     /**

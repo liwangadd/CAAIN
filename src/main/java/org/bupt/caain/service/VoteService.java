@@ -23,7 +23,7 @@ public class VoteService {
     @Autowired
     private EntryExpertModel entryExpertModel;
 
-    private boolean shellBuildPrize = true;
+    private static boolean shellBuildPrize = true;
 
     public List<VoteVo> getEntriesForType(int awardId) {
         List<Entry> entries = entryModel.queryEntriesByAwardId(awardId);
@@ -105,7 +105,7 @@ public class VoteService {
     }
 
     public void setShellBuildPrize(boolean shellBuild) {
-        this.shellBuildPrize = shellBuild;
+        shellBuildPrize = shellBuild;
     }
 
 

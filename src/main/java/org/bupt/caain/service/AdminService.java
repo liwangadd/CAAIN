@@ -61,4 +61,20 @@ public class AdminService {
         printService.printVoteResult(entries, filePath, award.getAward_name());
     }
 
+    public int startVote(int award_id){
+        Award award = awardModel.queryById(award_id);
+        award.setVoted(true);
+        return awardModel.update(award);
+    }
+
+    // 获取所有奖项
+    public List<Award> getAwards() {
+        return awardModel.queryAll();
+    }
+
+    public int stopVote(int award_id) {
+        Award award = awardModel.queryById(award_id);
+        award.setVoted(false);
+        return awardModel.update(award);
+    }
 }
