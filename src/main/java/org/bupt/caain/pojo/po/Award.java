@@ -2,11 +2,17 @@ package org.bupt.caain.pojo.po;
 
 public class Award {
 
+    //    自增主键
     private int id;
+
+    //    奖项名称
     private String award_name;
+
+    //    是否参与投票
     private boolean voted;
 
-    public Award(){}
+    public Award() {
+    }
 
     public Award(String award_name) {
         this.award_name = award_name;

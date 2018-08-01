@@ -15,7 +15,7 @@ public class ExpertModel {
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
-    public void add(Expert expert){
+    public void add(Expert expert) {
         jdbcTemplate.update("INSERT INTO expert (num, ip, voted) VALUES (?, ?, ?)", expert.getNum(), expert.getIp(), expert.getVoted());
     }
 
@@ -30,6 +30,7 @@ public class ExpertModel {
 
     /**
      * 获取已投票专家人数
+     *
      * @return 投票专家人数
      */
     public int queryVotedCount() {
@@ -38,6 +39,7 @@ public class ExpertModel {
 
     /**
      * 根据id获取专家信息
+     *
      * @param expertId 专家id
      * @return 专家信息
      */
@@ -60,19 +62,21 @@ public class ExpertModel {
 
     /**
      * 更新专家投票状态
+     *
      * @param voted 投票状态
-     * @param id 专家id
+     * @param id    专家id
      */
     public void updateById(boolean voted, int id) {
-        if(voted) {
+        if (voted) {
             jdbcTemplate.update("UPDATE expert SET voted = ? WHERE id = ?", 1, id);
-        }else{
+        } else {
             jdbcTemplate.update("UPDATE expert SET voted = ? WHERE id = ?", 0, id);
         }
     }
 
     /**
      * 根据id查询专家信息
+     *
      * @param ip 专家ip地址
      * @return 专家信息
      */

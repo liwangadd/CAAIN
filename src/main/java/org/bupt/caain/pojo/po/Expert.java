@@ -2,9 +2,16 @@ package org.bupt.caain.pojo.po;
 
 public class Expert {
 
+    //    自增主键
     private int id;
+
+    //    专家编号
     private String num;
+
+    //    专家IP
     private String ip;
+
+    //    是否已投票
     private int voted;
 
     public Expert(String num, String ip, int voted) {

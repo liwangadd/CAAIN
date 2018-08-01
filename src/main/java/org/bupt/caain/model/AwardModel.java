@@ -17,6 +17,12 @@ public class AwardModel {
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
+    /**
+     * 添加申报项目并返回主键
+     *
+     * @param award 项目信息
+     * @return 主键值
+     */
     public int addAndGetId(Award award) {
         KeyHolder awardKeyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(connection -> {
@@ -25,7 +31,7 @@ public class AwardModel {
             ps.setBoolean(2, award.isVoted());
             return ps;
         }, awardKeyHolder);
-        int awardId = (Integer)awardKeyHolder.getKeys().get("id");
+        int awardId = (Integer) awardKeyHolder.getKeys().get("id");
         return awardId;
     }
 
@@ -53,16 +59,27 @@ public class AwardModel {
         }
     }
 
+    /**
+     * 获取参评奖项的所有项目
+     *
+     * @return 申报该奖项的所有项目
+     */
     public List<Award> queryVoteAwards() {
         List<Award> awards = jdbcTemplate.query("SELECT id, award_name, voted FROM award WHERE voted = 1", new BeanPropertyRowMapper<>(Award.class));
-        if(awards!=null&&awards.size()>0){
+        if (awards != null && awards.size() > 0) {
             return awards;
-        }else{
+        } else {
             return null;
         }
     }
 
-    public int update(Award award){
+    /**
+     * 更新申报项目信息
+     *
+     * @param award 项目信息
+     * @return 更新成功的条数
+     */
+    public int update(Award award) {
         return jdbcTemplate.update("UPDATE award SET award_name = ?, voted = ? WHERE id = ?", award.getAward_name(), award.isVoted(), award.getId());
     }
 }

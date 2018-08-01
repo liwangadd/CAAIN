@@ -17,7 +17,13 @@ public class EntryModel {
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
-    public int addAndGetId(Entry entry){
+    /**
+     * 添加申报项目并返回主键内容
+     *
+     * @param entry 项目信息
+     * @return 主键值
+     */
+    public int addAndGetId(Entry entry) {
         KeyHolder entryKeyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(connection -> {
             PreparedStatement statement = connection.prepareStatement(
@@ -69,6 +75,12 @@ public class EntryModel {
         }
     }
 
+    /**
+     * 根据主键查询申报项目
+     *
+     * @param id 项目ID
+     * @return 申报项目信息
+     */
     public Entry queryById(int id) {
         List<Entry> entries = jdbcTemplate.query("SELECT id, entry_name, entry_prize, entry_application, application_path, level1, level2, level3, award_id FROM entry WHERE id = ?",
                 new BeanPropertyRowMapper<>(Entry.class), id);
@@ -78,15 +90,28 @@ public class EntryModel {
         return null;
     }
 
+    /**
+     * 更新申报项目的投票信息
+     *
+     * @param entry 项目投票结果
+     */
     public void updateLevelById(Entry entry) {
         jdbcTemplate.update("UPDATE entry SET level1 = ?, level2 = ?, level3 = ? WHERE id = ?", entry.getLevel1(),
                 entry.getLevel2(), entry.getLevel3(), entry.getId());
     }
 
+    /**
+     * 重置投票结果
+     */
     public void resetAll() {
         jdbcTemplate.update("UPDATE entry SET entry_prize='', level1 = 0, level2 = 0, level3 = 0");
     }
 
+    /**
+     * 重置申报指定奖项项目的投票结果
+     *
+     * @param awardId 奖项ID
+     */
     public void resetByAwardId(int awardId) {
         jdbcTemplate.update("UPDATE entry SET entry_prize='', level1 = 0, level2 = 0, level3 = 0 WHERE award_id = ?", awardId);
     }

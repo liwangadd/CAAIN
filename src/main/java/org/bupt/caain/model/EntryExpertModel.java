@@ -16,6 +16,7 @@ public class EntryExpertModel {
 
     /**
      * 插入专家评奖信息
+     *
      * @param entryExpert 评奖内容
      */
     public void add(EntryExpert entryExpert) {
@@ -26,6 +27,7 @@ public class EntryExpertModel {
 
     /**
      * 根据专家和作品查询评奖结果
+     *
      * @param entryExpert 查询条件
      * @return 评奖结果
      */

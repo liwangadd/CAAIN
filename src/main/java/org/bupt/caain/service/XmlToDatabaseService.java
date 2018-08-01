@@ -1,6 +1,5 @@
 package org.bupt.caain.service;
 
-import com.sun.org.apache.xpath.internal.functions.FuncFalse;
 import org.bupt.caain.model.AttachModel;
 import org.bupt.caain.model.AwardModel;
 import org.bupt.caain.model.EntryModel;
@@ -18,30 +17,23 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.PreparedStatementCreator;
-import org.springframework.jdbc.support.GeneratedKeyHolder;
-import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Service;
-import org.springframework.util.FileSystemUtils;
 import org.springframework.util.ResourceUtils;
-import org.springframework.util.StringUtils;
 
 import javax.annotation.PostConstruct;
 import java.io.File;
-import java.io.FileFilter;
 import java.io.FileNotFoundException;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-import java.util.Arrays;
 import java.util.Iterator;
-import java.util.List;
 
 @Service
 public class XmlToDatabaseService {
 
     private Logger logger = LoggerFactory.getLogger(XmlToDatabaseService.class);
+
+    private static final String SEPARATOR = File.separator;
+
+    private static final String EXPERT_NUM = "no";
+    private static final String EXPERT_IP = "ip";
 
     @Autowired
     private AwardModel awardModel;
@@ -76,8 +68,8 @@ public class XmlToDatabaseService {
         Iterator expertIterator = rootElement.elementIterator("expert");
         while (expertIterator.hasNext()) {
             Element expertElement = (Element) expertIterator.next();
-            String no = expertElement.elementText("no");
-            String ip = expertElement.elementText("ip");
+            String no = expertElement.elementText(EXPERT_NUM);
+            String ip = expertElement.elementText(EXPERT_IP);
             Expert expert = new Expert(no, ip, 0);
             expertModel.add(expert);
         }
@@ -110,7 +102,7 @@ public class XmlToDatabaseService {
         // 插入项目信息
         if (entryDirs != null && entryDirs.length > 0) {
             for (File entryDir : entryDirs) {
-                insertEntry(awardId, entryDir, awardPath + "/" + entryDir.getName());
+                insertEntry(awardId, entryDir, awardPath + SEPARATOR + entryDir.getName());
             }
         }
     }
@@ -125,7 +117,7 @@ public class XmlToDatabaseService {
         File[] applicationFiles = entryDir.listFiles(pathname -> pathname.getName().endsWith(".pdf"));
         if (applicationFiles != null && applicationFiles.length > 0) {
             File applicationFile = applicationFiles[0];
-            String applicationPath = entryPath + "/" + applicationFile.getName();
+            String applicationPath = entryPath + SEPARATOR + applicationFile.getName();
             entry.setEntry_application(FileUtils.getFileNameNoExtension(applicationFile.getName()));
             entry.setApplication_path(applicationPath);
         }
@@ -134,7 +126,7 @@ public class XmlToDatabaseService {
         // 持久化申请项目的所有附件
         File attachDir = new File(entryDir.getAbsolutePath() + "/附件");
         File[] attachFiles = attachDir.listFiles(pathname -> pathname.getName().endsWith(".pdf"));
-        if (attachFiles.length > 0) {
+        if (attachFiles != null && attachFiles.length > 0) {
             for (File attachFile : attachFiles) {
                 insertAttach(entryId, attachFile, entryPath + "/附件");
             }
@@ -144,7 +136,7 @@ public class XmlToDatabaseService {
     // 持久化附件信息
     private void insertAttach(int entryId, File attachFile, String attachDirPath) {
         String attachName = FileUtils.getFileNameNoExtension(attachFile);
-        String attachPath = attachDirPath + "/" + attachFile.getName();
+        String attachPath = attachDirPath + SEPARATOR + attachFile.getName();
 
         Attach attach = new Attach(attachName, attachPath, entryId);
         attachModel.add(attach);

@@ -1,17 +1,33 @@
 package org.bupt.caain.pojo.po;
 
 public class Entry {
+
+    //    自增主键
     private int id;
+
+    //    项目名称
     private String entry_name;
+
+    //    最终获奖结果
     private String entry_prize;
+
     private String entry_application;
     private String application_path;
+
+    //    一等奖得票数
     private int level1;
+
+    //    二等奖得票数
     private int level2;
+
+    //    三等奖得票数
     private int level3;
+
+    //    申报奖项的ID
     private int award_id;
 
-    public Entry(){}
+    public Entry() {
+    }
 
     public Entry(String entry_name, int award_id) {
         this.entry_name = entry_name;

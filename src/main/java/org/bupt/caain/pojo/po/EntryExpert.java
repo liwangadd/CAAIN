@@ -1,11 +1,23 @@
 package org.bupt.caain.pojo.po;
 
 public class EntryExpert {
+
+    //    自增主键
     private int id;
+
+    //    审评项目ID
     private int entry_id;
+
+    //    专家ID
     private int expert_id;
+
+    //    一等奖
     private int level1;
+
+    //    二等奖
     private int level2;
+
+    //    三等奖
     private int level3;
 
     public int getId() {

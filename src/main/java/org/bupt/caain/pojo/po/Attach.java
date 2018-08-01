@@ -1,12 +1,21 @@
 package org.bupt.caain.pojo.po;
 
 public class Attach {
+
+    //    自增主键
     private int id;
+
+    //    附件名称
     private String attach_name;
+
+    //    附件路径
     private String attach_path;
+
+    //    所属项目ID
     private int entry_id;
 
-    public Attach(){}
+    public Attach() {
+    }
 
     public Attach(String attach_name, String attach_path, int entry_id) {
         this.attach_name = attach_name;
