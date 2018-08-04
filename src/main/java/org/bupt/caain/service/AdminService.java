@@ -97,10 +97,6 @@ public class AdminService {
         return awardModel.queryById(awardId);
     }
 
-    public void test(int awardId, int expertId) {
-        entryModel.queryEntriesWithPrize(awardId, expertId);
-    }
-
     public void stopVote(int award_id) {
         Award award = awardModel.queryById(award_id);
         award.setVoted(false);

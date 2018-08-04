@@ -12,7 +12,6 @@ import org.bupt.caain.pojo.po.Expert;
 import org.bupt.caain.pojo.vo.VoteAwardVo;
 import org.bupt.caain.pojo.vo.VoteDataVo;
 import org.bupt.caain.pojo.vo.VoteEntryVo;
-import org.bupt.caain.pojo.vo.VoteVo;
 import org.bupt.caain.utils.PrintUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,24 +44,6 @@ public class VoteService {
         this.expertModel = expertModel;
         this.entryModel = entryModel;
         this.entryExpertModel = entryExpertModel;
-    }
-
-    public List<VoteVo> getEntriesForType(int awardId) {
-        List<Entry> entries = entryModel.queryEntriesByAwardId(awardId);
-        if (null != entries && entries.size() > 0) {
-            Integer count = expertModel.queryCount();
-            List<VoteVo> voteVos = new ArrayList<>();
-            for (Entry entry : entries) {
-                VoteVo voteVo = new VoteVo();
-                voteVo.setId(entry.getId());
-                voteVo.setEntry_name(entry.getEntry_name());
-                voteVo.setExpert_num(count);
-                voteVos.add(voteVo);
-            }
-            return voteVos;
-        } else {
-            return null;
-        }
     }
 
     public boolean votePerExpert(List<VotePerExpert> votesOfExpert, Expert expert) throws DocumentException {

@@ -79,11 +79,4 @@ public class AdminController {
         }
     }
 
-    @GetMapping(value = "{award_id}/{expert_id}")
-    public @ResponseBody
-    CommonResult test(@PathVariable int award_id, @PathVariable int expert_id){
-        adminService.test(award_id, expert_id);
-        return CommonResult.success("success");
-    }
-
 }

@@ -23,7 +23,7 @@ $(function () {
     };
 
     $.ajax({
-        url: "/voteData",
+        url: "/vote/data",
         type: "GET",
         contentType: "application/json",
         dataType: "json",
@@ -71,7 +71,7 @@ $(function () {
 
     function fetchUnvotedExpert() {
         $.ajax({
-            url: "/unvoted",
+            url: "/vote/unvoted",
             type: 'GET',
             success: (result) => {
                 console.log(result);

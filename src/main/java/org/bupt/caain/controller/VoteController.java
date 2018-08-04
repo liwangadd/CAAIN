@@ -2,11 +2,9 @@ package org.bupt.caain.controller;
 
 import com.itextpdf.text.DocumentException;
 import org.bupt.caain.pojo.jo.VotePerExpert;
-import org.bupt.caain.pojo.po.Award;
 import org.bupt.caain.pojo.po.Expert;
 import org.bupt.caain.pojo.vo.VoteDataVo;
 import org.bupt.caain.pojo.vo.VoteEntryVo;
-import org.bupt.caain.pojo.vo.VoteVo;
 import org.bupt.caain.service.VoteService;
 import org.bupt.caain.utils.CommonResult;
 import org.bupt.caain.utils.NetworkUtils;
@@ -22,6 +20,7 @@ import java.util.List;
 import java.util.Map;
 
 @Controller
+@RequestMapping("vote")
 public class VoteController {
 
     private final VoteService voteService;
@@ -38,7 +37,7 @@ public class VoteController {
      *
      * @return 投票页面名称
      */
-    @RequestMapping(value = "vote", method = RequestMethod.GET)
+    @RequestMapping(value = "", method = RequestMethod.GET)
     public String getVotePage() {
         return "vote";
     }
@@ -49,7 +48,7 @@ public class VoteController {
      * @param votesOfExpert 专家投票结果数据
      * @return 是否投票成功
      */
-    @RequestMapping(value = "vote", method = RequestMethod.POST)
+    @RequestMapping(value = "", method = RequestMethod.POST)
     public @ResponseBody
     CommonResult votePerExpert(@RequestBody List<VotePerExpert> votesOfExpert, HttpServletRequest request) {
         log.info(votesOfExpert.toString());
@@ -82,7 +81,7 @@ public class VoteController {
      * @param request 请求request，用户获取客户端IP
      * @return 数据
      */
-    @RequestMapping(value = "voteData", method = RequestMethod.GET)
+    @RequestMapping(value = "data", method = RequestMethod.GET)
     public @ResponseBody
     CommonResult getVoteData(HttpServletRequest request) {
         String ip = NetworkUtils.getIpAddr(request);
@@ -101,7 +100,7 @@ public class VoteController {
      * @param awardId 投票奖项ID
      * @return 数据
      */
-    @RequestMapping(value = "vote/result/{award_id}", method = RequestMethod.GET)
+    @RequestMapping(value = "/result/{award_id}", method = RequestMethod.GET)
     public @ResponseBody
     CommonResult getVoteResult(@PathVariable("award_id") int awardId) {
         if (!voteService.isVotedDown()) {
@@ -125,41 +124,6 @@ public class VoteController {
         int count = voteService.getUnvotedExpertCount();
         content.put("count", count);
         return CommonResult.success("获取未投票专家人数", content);
-    }
-
-    @RequestMapping(value = "awards", method = RequestMethod.GET)
-    public @ResponseBody
-    CommonResult getAwards() {
-        List<Award> awards = voteService.getVoteAwards();
-        if (null != awards && awards.size() > 0) {
-            return CommonResult.success("获取全部奖项", awards);
-        } else {
-            return CommonResult.failure("投票还未开始");
-        }
-    }
-
-    @RequestMapping(value = "expert", method = RequestMethod.GET)
-    public @ResponseBody
-    CommonResult getExpertByIp(HttpServletRequest request) {
-        String ip = NetworkUtils.getIpAddr(request);
-        System.out.println(ip);
-        Expert expert = voteService.getExpertByIp(ip);
-        if (null != expert) {
-            return CommonResult.success("获取专家编号成功", expert);
-        } else {
-            return CommonResult.failure("您没有投票资格");
-        }
-    }
-
-    @RequestMapping(value = "entries/{award_id}", method = RequestMethod.GET)
-    public @ResponseBody
-    CommonResult getVoteForType(@PathVariable("award_id") int awardId) {
-        List<VoteVo> voteVos = voteService.getEntriesForType(awardId);
-        if (null != voteVos) {
-            return CommonResult.success("获取奖项参赛作品成功", voteVos);
-        } else {
-            return CommonResult.failure("没有参与该奖项评审的作品");
-        }
     }
 
 }

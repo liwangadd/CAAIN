@@ -3,7 +3,7 @@ $(function () {
     let entryContent;
 
     $.ajax({
-        url: '/entries',
+        url: '/home/entries',
         type: 'GET',
         contentType: 'application/json',
         dataType: 'json',
