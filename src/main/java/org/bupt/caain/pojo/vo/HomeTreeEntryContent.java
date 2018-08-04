@@ -1,7 +1,10 @@
 package org.bupt.caain.pojo.vo;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+
 import java.util.List;
 
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class HomeTreeEntryContent{
     private String text;
     private boolean clickable;

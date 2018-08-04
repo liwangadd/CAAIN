@@ -1,4 +1,4 @@
-package org.bupt.caain.service;
+package org.bupt.caain.utils;
 
 import com.itextpdf.text.*;
 import com.itextpdf.text.pdf.PdfPCell;
@@ -6,7 +6,6 @@ import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
 import org.bupt.caain.pojo.jo.VotePerExpert;
 import org.bupt.caain.pojo.po.Entry;
-import org.springframework.stereotype.Service;
 import org.springframework.util.ResourceUtils;
 
 import java.io.File;
@@ -14,9 +13,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.List;
 
-@Service
-public class PrintService {
-
+public class PrintUtils {
     public String printVoteResultPerExpert(List<VotePerExpert> votesOfExpert, String filePath, String title, String expertNum) throws DocumentException {
         // 打开PDF文件
         Document document = null;
@@ -161,5 +158,4 @@ public class PrintService {
             document.add(new Paragraph(" "));
         }
     }
-
 }

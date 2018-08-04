@@ -15,10 +15,14 @@ import java.util.List;
 @RequestMapping("admin")
 public class AdminController {
 
+    private final AdminService adminService;
+    private final VoteService voteService;
+
     @Autowired
-    private AdminService adminService;
-    @Autowired
-    private VoteService voteService;
+    public AdminController(AdminService adminService, VoteService voteService) {
+        this.adminService = adminService;
+        this.voteService = voteService;
+    }
 
     @RequestMapping(value = "", method = RequestMethod.GET)
     public String adminPage() {
@@ -40,33 +44,46 @@ public class AdminController {
     public @ResponseBody
     CommonResult clear() {
         adminService.clearVote();
-        voteService.setShellBuildPrize(true);
         return CommonResult.success("成功清空投票结果");
     }
 
     @RequestMapping(value = "/pdf/{award_id}", method = RequestMethod.POST)
     public @ResponseBody
     CommonResult buildFinalPDF(@PathVariable int award_id) {
+        Award award = adminService.getAward(award_id);
+        if (award == null || !award.isVoted()) {
+            return CommonResult.failure("该奖项投票还未开始");
+        }
         if (!voteService.isVotedDown()) {
-            return CommonResult.failure("投票还未结束");
+            return CommonResult.failure("还有" + voteService.getUnvotedExpertCount() + "名专家未投票");
         }
         try {
             adminService.printFinalPDF(award_id);
-            adminService.stopVote(award_id);
         } catch (DocumentException e) {
             return CommonResult.failure("PDF文件生成失败");
         }
+//        adminService.stopVote(award_id);
         return CommonResult.success("最终文件生成成功");
     }
 
     @PostMapping(value = "start_vote/{award_id}")
-    public @ResponseBody CommonResult startVote(@PathVariable int award_id){
+    public @ResponseBody
+    CommonResult startVote(@PathVariable int award_id) {
         int affectRows = adminService.startVote(award_id);
-        if(affectRows>0){
+        if (affectRows > 0) {
             return CommonResult.success("开启投票成功");
-        }else{
+        } else if (affectRows == -1) {
+            return CommonResult.failure("该奖项投票已开启");
+        } else {
             return CommonResult.failure("开启投票失败");
         }
+    }
+
+    @GetMapping(value = "{award_id}/{expert_id}")
+    public @ResponseBody
+    CommonResult test(@PathVariable int award_id, @PathVariable int expert_id){
+        adminService.test(award_id, expert_id);
+        return CommonResult.success("success");
     }
 
 }

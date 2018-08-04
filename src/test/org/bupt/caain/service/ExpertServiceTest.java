@@ -13,8 +13,8 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.util.List;
 
-@ContextConfiguration("classpath:spring/spring-data.xml")
-@RunWith(SpringJUnit4ClassRunner.class)
+//@ContextConfiguration("classpath:spring/spring-data.xml")
+//@RunWith(SpringJUnit4ClassRunner.class)
 public class ExpertServiceTest {
 
     @Autowired
@@ -38,8 +38,8 @@ public class ExpertServiceTest {
         }
     }
 
-    public void sourceRead(){
-        ThreadLocal<Integer> threadLocal = new ThreadLocal<Integer>();
+    public static void main(String[] args) {
+        System.out.println("1-科技进步奖".replaceAll("^\\d-", ""));
     }
 
 }

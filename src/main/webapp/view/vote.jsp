@@ -26,7 +26,7 @@
     <div class="line"></div>
 
     <div class="row">
-        <h2 class="center-block" style="width:800px;text-align:center">吴文俊人工智能科学技术-自然科学奖</h2>
+        <h2 id="award_title" class="center-block" style="width:800px;text-align:center">吴文俊人工智能科学技术-自然科学奖</h2>
     </div>
 
     <div class="container table-responsive text-center" style="margin-top:40px;">

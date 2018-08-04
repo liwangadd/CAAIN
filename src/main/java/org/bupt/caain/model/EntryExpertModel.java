@@ -1,6 +1,8 @@
 package org.bupt.caain.model;
 
 import org.bupt.caain.pojo.po.EntryExpert;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -11,8 +13,13 @@ import java.util.List;
 @Repository
 public class EntryExpertModel {
 
+    private final JdbcTemplate jdbcTemplate;
+    private static final Logger log = LoggerFactory.getLogger(EntryExpertModel.class);
+
     @Autowired
-    private JdbcTemplate jdbcTemplate;
+    public EntryExpertModel(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
+    }
 
     /**
      * 插入专家评奖信息
@@ -46,5 +53,14 @@ public class EntryExpertModel {
      */
     public void deleteAll() {
         jdbcTemplate.update("DELETE FROM  entry_expert");
+    }
+
+    /**
+     * 删除参评指定奖项所有作品的投票信息
+     *
+     * @param entryIds 作品IDs
+     */
+    public void deleteByEntryIds(List<Integer> entryIds) {
+        entryIds.stream().forEach(entryId->jdbcTemplate.update("DELETE FROM entry_expert WHERE entry_id = ?", entryId));
     }
 }

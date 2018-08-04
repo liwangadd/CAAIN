@@ -6,13 +6,11 @@ import org.bupt.caain.model.EntryModel;
 import org.bupt.caain.pojo.po.Attach;
 import org.bupt.caain.pojo.po.Award;
 import org.bupt.caain.pojo.po.Entry;
-import org.bupt.caain.pojo.po.Expert;
 import org.bupt.caain.pojo.vo.HomeTreeAttachVo;
 import org.bupt.caain.pojo.vo.HomeTreeAwardVO;
 import org.bupt.caain.pojo.vo.HomeTreeEntryContent;
 import org.bupt.caain.pojo.vo.HomeTreeEntryVo;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -21,21 +19,26 @@ import java.util.List;
 @Service
 public class HomeService {
 
+    private final AwardModel awardModel;
+    private final EntryModel entryModel;
+    private final AttachModel attachModel;
+
     @Autowired
-    private AwardModel awardModel;
-    @Autowired
-    private EntryModel entryModel;
-    @Autowired
-    private AttachModel attachModel;
+    public HomeService(AwardModel awardModel, EntryModel entryModel, AttachModel attachModel) {
+        this.awardModel = awardModel;
+        this.entryModel = entryModel;
+        this.attachModel = attachModel;
+    }
 
     /**
      * 层次获取所有奖项
-     * @return
+     *
+     * @return 首页数据
      */
     public List<HomeTreeAwardVO> getEntriesTree() {
         // 获取所有奖项
         List<Award> awards = awardModel.queryAll();
-        List<HomeTreeAwardVO> awardVOs = new ArrayList<HomeTreeAwardVO>();
+        List<HomeTreeAwardVO> awardVOs = new ArrayList<>();
         // 获取奖项下所有作品
         for (Award award : awards) {
             HomeTreeAwardVO awardVO = new HomeTreeAwardVO();
@@ -60,7 +63,7 @@ public class HomeService {
                     attachVo.setId(attach.getId());
                     attachVos.add(attachVo);
                 }
-                entryContents.add(new HomeTreeEntryContent(entry.getEntry_application(), true, entry.getApplication_path(),null));
+                entryContents.add(new HomeTreeEntryContent(entry.getEntry_application(), true, entry.getApplication_path(), null));
                 entryContents.add(new HomeTreeEntryContent("附件", false, "", attachVos));
                 entryVo.setText(entry.getEntry_name());
                 entryVo.setClickable(false);
@@ -72,10 +75,6 @@ public class HomeService {
             awardVOs.add(awardVO);
         }
         return awardVOs;
-    }
-
-    public List<Award> getVoteAwards(){
-        return awardModel.queryVoteAwards();
     }
 
 }

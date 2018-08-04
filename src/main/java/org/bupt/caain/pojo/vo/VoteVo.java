@@ -1,5 +1,8 @@
 package org.bupt.caain.pojo.vo;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class VoteVo {
 
     private int id;

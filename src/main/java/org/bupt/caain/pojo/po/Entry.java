@@ -15,13 +15,13 @@ public class Entry {
     private String application_path;
 
     //    一等奖得票数
-    private int level1;
+    private Integer level1;
 
     //    二等奖得票数
-    private int level2;
+    private Integer level2;
 
     //    三等奖得票数
-    private int level3;
+    private Integer level3;
 
     //    申报奖项的ID
     private int award_id;
@@ -34,7 +34,7 @@ public class Entry {
         this.award_id = award_id;
     }
 
-    public Entry(int id, String entry_name, String entry_prize, String entry_application, String application_path, int level1, int level2, int level3, int award_id) {
+    public Entry(int id, String entry_name, String entry_prize, String entry_application, String application_path, Integer level1, Integer level2, Integer level3, int award_id) {
         this.id = id;
         this.entry_name = entry_name;
         this.entry_prize = entry_prize;
@@ -62,38 +62,6 @@ public class Entry {
         this.entry_name = entry_name;
     }
 
-    public int getLevel1() {
-        return level1;
-    }
-
-    public void setLevel1(int level1) {
-        this.level1 = level1;
-    }
-
-    public int getLevel2() {
-        return level2;
-    }
-
-    public void setLevel2(int level2) {
-        this.level2 = level2;
-    }
-
-    public int getLevel3() {
-        return level3;
-    }
-
-    public void setLevel3(int level3) {
-        this.level3 = level3;
-    }
-
-    public int getAward_id() {
-        return award_id;
-    }
-
-    public void setAward_id(int award_id) {
-        this.award_id = award_id;
-    }
-
     public String getEntry_prize() {
         return entry_prize;
     }
@@ -116,6 +84,38 @@ public class Entry {
 
     public void setApplication_path(String application_path) {
         this.application_path = application_path;
+    }
+
+    public Integer getLevel1() {
+        return level1;
+    }
+
+    public void setLevel1(Integer level1) {
+        this.level1 = level1;
+    }
+
+    public Integer getLevel2() {
+        return level2;
+    }
+
+    public void setLevel2(Integer level2) {
+        this.level2 = level2;
+    }
+
+    public Integer getLevel3() {
+        return level3;
+    }
+
+    public void setLevel3(Integer level3) {
+        this.level3 = level3;
+    }
+
+    public int getAward_id() {
+        return award_id;
+    }
+
+    public void setAward_id(int award_id) {
+        this.award_id = award_id;
     }
 
     @Override

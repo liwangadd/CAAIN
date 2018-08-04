@@ -28,32 +28,37 @@ import java.util.Iterator;
 @Service
 public class XmlToDatabaseService {
 
-    private Logger logger = LoggerFactory.getLogger(XmlToDatabaseService.class);
+    private static final Logger log = LoggerFactory.getLogger(XmlToDatabaseService.class);
 
     private static final String SEPARATOR = File.separator;
 
     private static final String EXPERT_NUM = "no";
     private static final String EXPERT_IP = "ip";
 
-    @Autowired
-    private AwardModel awardModel;
+    private final AwardModel awardModel;
 
-    @Autowired
-    private ExpertModel expertModel;
+    private final ExpertModel expertModel;
 
-    @Autowired
-    private EntryModel entryModel;
+    private final EntryModel entryModel;
 
-    @Autowired
-    private AttachModel attachModel;
+    private final AttachModel attachModel;
 
     @Value("${doc-dir}")
     private String docPath;
+
+    @Autowired
+    public XmlToDatabaseService(AwardModel awardModel, ExpertModel expertModel, EntryModel entryModel, AttachModel attachModel) {
+        this.awardModel = awardModel;
+        this.expertModel = expertModel;
+        this.entryModel = entryModel;
+        this.attachModel = attachModel;
+    }
 
     @PostConstruct
     public void storeXMLtoDataBase() throws FileNotFoundException, DocumentException {
         parseDoc();
         parseExpert();
+        log.warn("数据库初始化成功");
     }
 
     private Element getRootElement(String filePath) throws FileNotFoundException, DocumentException {
@@ -75,11 +80,11 @@ public class XmlToDatabaseService {
         }
     }
 
-    private void parseDoc() throws FileNotFoundException, DocumentException {
+    private void parseDoc() throws FileNotFoundException {
 //        Element rootElement = getRootElement("classpath:config/kjcdoc.xml");
         File caainDir = new File(docPath);
         if (!caainDir.exists() || caainDir.isFile()) {
-            logger.error("奖项文件夹不存在");
+            log.error("奖项文件夹不存在");
             throw new FileNotFoundException("奖项文件夹不存在");
         }
         File[] awardDirs = caainDir.listFiles(File::isDirectory);

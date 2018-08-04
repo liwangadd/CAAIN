@@ -14,8 +14,12 @@ import java.util.List;
 @Repository
 public class AwardModel {
 
+    private final JdbcTemplate jdbcTemplate;
+
     @Autowired
-    private JdbcTemplate jdbcTemplate;
+    public AwardModel(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
+    }
 
     /**
      * 添加申报项目并返回主键
@@ -60,9 +64,9 @@ public class AwardModel {
     }
 
     /**
-     * 获取参评奖项的所有项目
+     * 获取开启投票的奖项
      *
-     * @return 申报该奖项的所有项目
+     * @return 开启投票的奖项
      */
     public List<Award> queryVoteAwards() {
         List<Award> awards = jdbcTemplate.query("SELECT id, award_name, voted FROM award WHERE voted = 1", new BeanPropertyRowMapper<>(Award.class));
@@ -82,4 +86,5 @@ public class AwardModel {
     public int update(Award award) {
         return jdbcTemplate.update("UPDATE award SET award_name = ?, voted = ? WHERE id = ?", award.getAward_name(), award.isVoted(), award.getId());
     }
+
 }

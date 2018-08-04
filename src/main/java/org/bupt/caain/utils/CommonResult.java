@@ -1,5 +1,8 @@
 package org.bupt.caain.utils;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * 通用返回结果
  * Created by zlren on 2017/6/6.
@@ -9,6 +12,8 @@ public class CommonResult {
     private String code;
     private String reason;
     private Object content; // 数据
+
+    private static final Logger log = LoggerFactory.getLogger(CommonResult.class);
 
     /**
      * @return
@@ -48,7 +53,7 @@ public class CommonResult {
         this.reason = reason;
         this.content = content;
 
-        System.out.println(this.toString());
+//        log.warn(this.toString());
     }
 
     public String getCode() {

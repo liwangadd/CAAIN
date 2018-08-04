@@ -32,8 +32,8 @@ $(function () {
                 content = result['content'];
                 content.forEach(function (award) {
                     award_ids.push(award['id']);
-                    award_div.append(`<button id="award_btn_${award['id']}" class="btn btn-primary" style="margin-left: 8px">${award['award_name'].substr(1)}PDF</button>`)
-                    vote_div.append(`<button id="vote_btn_${award['id']}" class="btn btn-primary" style="margin-left: 8px">开启${award['award_name'].substr(1)}投票</button>`)
+                    award_div.append(`<button id="award_btn_${award['id']}" class="btn btn-primary" style="margin-left: 8px">${award['award_name'].replace(/^\d-/, '')}PDF</button>`)
+                    vote_div.append(`<button id="vote_btn_${award['id']}" class="btn btn-primary" style="margin-left: 8px">开启${award['award_name'].replace(/^\d-/, '')}投票</button>`)
                 });
                 for (let i = 1, len = content.length; i <= len; ++i) {
                     $(`#award_btn_${i}`).on('click', () => {
