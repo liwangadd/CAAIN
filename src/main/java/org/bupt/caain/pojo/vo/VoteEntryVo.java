@@ -9,10 +9,14 @@ public class VoteEntryVo extends Entry {
 
     private int expert_count;
 
-    public VoteEntryVo(){}
+    public VoteEntryVo() {
+    }
 
     public VoteEntryVo(Entry entry) {
         BeanUtils.copyProperties(entry, this);
+        this.setLevel1(0);
+        this.setLevel3(0);
+        this.setLevel2(0);
     }
 
     public int getExpert_count() {
