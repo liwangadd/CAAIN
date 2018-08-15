@@ -2,11 +2,11 @@
 <kjc-expert-config>
     <expert>
         <no>ZJ01-2017</no>
-        <ip>10.108.115.168</ip>
+        <ip>10.18.1.75</ip>
     </expert>
     <expert>
         <no>ZJ02-2017</no>
-        <ip>192.168.1.101</ip>
+        <ip>10.18.1.30</ip>
     </expert>
     <expert>
         <no>ZJ03-2017</no>

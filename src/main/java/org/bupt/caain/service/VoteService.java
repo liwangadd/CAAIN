@@ -8,6 +8,7 @@ import org.bupt.caain.model.ExpertModel;
 import org.bupt.caain.pojo.jo.VotePerExpert;
 import org.bupt.caain.pojo.po.Award;
 import org.bupt.caain.pojo.po.Entry;
+import org.bupt.caain.pojo.po.EntryExpert;
 import org.bupt.caain.pojo.po.Expert;
 import org.bupt.caain.pojo.vo.VoteAwardVo;
 import org.bupt.caain.pojo.vo.VoteDataVo;
@@ -128,14 +129,34 @@ public class VoteService {
         }
         List<Award> voteAwards = awardModel.queryVoteAwards();
         List<VoteAwardVo> voteAwardVos = new ArrayList<>();
+//        log.error("award count: {}", voteAwards.size());
         if (voteAwards != null && voteAwards.size() > 0) {
             int expertCount = expertModel.queryCount();
             for (Award voteAward : voteAwards) {
-                List<VoteEntryVo> entries = entryModel.queryEntriesWithPrize(voteAward.getId(), expert.getId());
+                List<Entry> entries = entryModel.queryEntriesByAwardId(voteAward.getId());
+                List<VoteEntryVo> voteEntries = entries.stream().map(entry -> {
+                    EntryExpert entryExpert = entryExpertModel.queryByEntryIdAndExpertId(entry.getId(),expert.getId());
+                    VoteEntryVo voteEntry = new VoteEntryVo();
+                    voteEntry.setId(entry.getId());
+                    voteEntry.setEntry_name(entry.getEntry_name());
+                    voteEntry.setAward_id(entry.getAward_id());
+                    if(entryExpert!=null) {
+                        voteEntry.setLevel1(entryExpert.getLevel1());
+                        voteEntry.setLevel2(entryExpert.getLevel2());
+                        voteEntry.setLevel3(entryExpert.getLevel3());
+                    }else{
+                        voteEntry.setLevel3(0);
+                        voteEntry.setLevel2(0);
+                        voteEntry.setLevel1(0);
+                    }
+                    return voteEntry;
+                }).collect(Collectors.toList());
+//                List<VoteEntryVo> entries = entryModel.queryEntriesWithPrize(voteAward.getId(), expert.getId());
+                log.error(entries.toString());
 //                entryModel.queryEntriesWithPrize(voteAward.getId(), expert.getId());
-                if (entries.size() > 0) {
+                if (voteEntries.size() > 0) {
                     VoteAwardVo awardVo = new VoteAwardVo(voteAward);
-                    awardVo.setEntries(entries);
+                    awardVo.setEntries(voteEntries);
                     awardVo.setExpert_count(expertCount);
                     voteAwardVos.add(awardVo);
                 }

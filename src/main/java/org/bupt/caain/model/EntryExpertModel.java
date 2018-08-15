@@ -63,4 +63,12 @@ public class EntryExpertModel {
     public void deleteByEntryIds(List<Integer> entryIds) {
         entryIds.stream().forEach(entryId->jdbcTemplate.update("DELETE FROM entry_expert WHERE entry_id = ?", entryId));
     }
+
+    public EntryExpert queryByEntryIdAndExpertId(int entryId, int expertId){
+        List<EntryExpert> entryExperts = jdbcTemplate.query("select level1, level2, level3 from entry_expert where entry_id = ? and expert_id = ?", new BeanPropertyRowMapper<>(EntryExpert.class), entryId, expertId);
+        if(entryExperts!=null&&entryExperts.size()>0){
+            return entryExperts.get(0);
+        }
+        return null;
+    }
 }
