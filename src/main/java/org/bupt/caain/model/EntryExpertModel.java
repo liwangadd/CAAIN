@@ -1,5 +1,6 @@
 package org.bupt.caain.model;
 
+import org.bupt.caain.pojo.po.Entry;
 import org.bupt.caain.pojo.po.EntryExpert;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -65,7 +66,8 @@ public class EntryExpertModel {
     }
 
     public EntryExpert queryByEntryIdAndExpertId(int entryId, int expertId){
-        List<EntryExpert> entryExperts = jdbcTemplate.query("select level1, level2, level3 from entry_expert where entry_id = ? and expert_id = ?", new BeanPropertyRowMapper<>(EntryExpert.class), entryId, expertId);
+        List<EntryExpert> entryExperts = jdbcTemplate.query("SELECT level1, level2, level3 FROM entry_expert WHERE entry_id = ? AND expert_id = ?",
+                new BeanPropertyRowMapper<>(EntryExpert.class), entryId, expertId);
         if(entryExperts!=null&&entryExperts.size()>0){
             return entryExperts.get(0);
         }
