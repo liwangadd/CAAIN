@@ -1,5 +1,6 @@
 package org.bupt.caain.model;
 
+import org.bupt.caain.pojo.po.Entry;
 import org.bupt.caain.pojo.po.EntryExpert;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -62,5 +63,14 @@ public class EntryExpertModel {
      */
     public void deleteByEntryIds(List<Integer> entryIds) {
         entryIds.stream().forEach(entryId->jdbcTemplate.update("DELETE FROM entry_expert WHERE entry_id = ?", entryId));
+    }
+
+    public EntryExpert queryByEntryIdAndExpertId(int entryId, int expertId){
+        List<EntryExpert> entryExperts = jdbcTemplate.query("SELECT level1, level2, level3 FROM entry_expert WHERE entry_id = ? AND expert_id = ?",
+                new BeanPropertyRowMapper<>(EntryExpert.class), entryId, expertId);
+        if(entryExperts!=null&&entryExperts.size()>0){
+            return entryExperts.get(0);
+        }
+        return null;
     }
 }

@@ -8,6 +8,7 @@ import org.bupt.caain.model.ExpertModel;
 import org.bupt.caain.pojo.jo.VotePerExpert;
 import org.bupt.caain.pojo.po.Award;
 import org.bupt.caain.pojo.po.Entry;
+import org.bupt.caain.pojo.po.EntryExpert;
 import org.bupt.caain.pojo.po.Expert;
 import org.bupt.caain.pojo.vo.VoteAwardVo;
 import org.bupt.caain.pojo.vo.VoteDataVo;
@@ -127,20 +128,40 @@ public class VoteService {
             return voteData;
         }
         List<Award> voteAwards = awardModel.queryVoteAwards();
-        List<VoteAwardVo> voteAwardVos = new ArrayList<>();
+//        List<VoteAwardVo> voteAwardVos = new ArrayList<>();
         if (voteAwards != null && voteAwards.size() > 0) {
             int expertCount = expertModel.queryCount();
-            for (Award voteAward : voteAwards) {
-                List<VoteEntryVo> entries = entryModel.queryEntriesWithPrize(voteAward.getId(), expert.getId());
-//                entryModel.queryEntriesWithPrize(voteAward.getId(), expert.getId());
+            List<VoteAwardVo> awardVos = voteAwards.stream().map(award -> {
+                VoteAwardVo awardVo = new VoteAwardVo(award);
+                List<Entry> voteEntries = entryModel.queryEntriesByAwardId(award.getId());
+                List<VoteEntryVo> entries = voteEntries.stream().map(voteEntry -> {
+                    VoteEntryVo voteEntryVo = new VoteEntryVo(voteEntry);
+                    EntryExpert entryExpert = entryExpertModel.queryByEntryIdAndExpertId(voteEntry.getId(), expert.getId());
+                    if (entryExpert != null) {
+                        voteEntryVo.setLevel1(entryExpert.getLevel1());
+                        voteEntryVo.setLevel2(entryExpert.getLevel2());
+                        voteEntryVo.setLevel3(entryExpert.getLevel3());
+                    }
+                    return voteEntryVo;
+                }).collect(Collectors.toList());
                 if (entries.size() > 0) {
-                    VoteAwardVo awardVo = new VoteAwardVo(voteAward);
                     awardVo.setEntries(entries);
-                    awardVo.setExpert_count(expertCount);
-                    voteAwardVos.add(awardVo);
                 }
-            }
-            voteData.setVoteAwards(voteAwardVos);
+                awardVo.setExpert_count(expertCount);
+                return awardVo;
+            }).collect(Collectors.toList());
+//            for (Award voteAward : voteAwards) {
+//                entryModel.queryEntriesByAwardId(voteAward.getId());
+//                List<VoteEntryVo> entries = entryModel.queryEntriesWithPrize(voteAward.getId(), expert.getId());
+//                entryModel.queryEntriesWithPrize(voteAward.getId(), expert.getId());
+//                if (entries.size() > 0) {
+//                    VoteAwardVo awardVo = new VoteAwardVo(voteAward);
+//                    awardVo.setEntries(entries);
+//                    awardVo.setExpert_count(expertCount);
+//                    voteAwardVos.add(awardVo);
+//                }
+//            }
+            voteData.setVoteAwards(awardVos);
         } else {
             voteData.setReason("投票还未开始");
             return voteData;

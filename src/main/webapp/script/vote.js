@@ -164,7 +164,7 @@ $(function () {
                     for (let i = 0; i < content.length; i++) {
                         voteBody.append(`<tr>
                                 <td id="entryId">${i + 1}</td>
-                                <td>11</td>
+                                <td>${content[i]['expert_count']}</td>
                                 <td id="entryName">${content[i]['entry_name']}</td>
                                 <td>${content[i]['entry_prize']}</td>
                             </tr>`)
