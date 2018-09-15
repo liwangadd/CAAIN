@@ -14,6 +14,10 @@ public class Attach {
     //    所属项目ID
     private int entry_id;
 
+    private boolean is_dir;
+
+    private int parent_id;
+
     public Attach() {
     }
 
@@ -55,6 +59,22 @@ public class Attach {
         this.attach_path = attach_path;
     }
 
+    public boolean isIs_dir() {
+        return is_dir;
+    }
+
+    public void setIs_dir(boolean is_dir) {
+        this.is_dir = is_dir;
+    }
+
+    public int getParent_id() {
+        return parent_id;
+    }
+
+    public void setParent_id(int parent_id) {
+        this.parent_id = parent_id;
+    }
+
     @Override
     public String toString() {
         return "Attach{" +
@@ -62,6 +82,8 @@ public class Attach {
                 ", attach_name='" + attach_name + '\'' +
                 ", attach_path='" + attach_path + '\'' +
                 ", entry_id=" + entry_id +
+                ", is_dir=" + is_dir +
+                ", parent_id=" + parent_id +
                 '}';
     }
 }

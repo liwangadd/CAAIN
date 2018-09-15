@@ -51,10 +51,19 @@ public class HomeService {
             for (Entry entry : entries) {
                 HomeTreeEntryVo entryVo = new HomeTreeEntryVo();
                 List<HomeTreeEntryContent> entryContents = new ArrayList<>();
+                // 添加申请书item
+                entryContents.add(new HomeTreeEntryContent(entry.getEntry_application(), true,
+                        entry.getApplication_path(), null));
 
-                List<Attach> attaches = attachModel.queryByEntryId(entry.getId());
-                List<HomeTreeAttachVo> attachVos = new ArrayList<>();
+                List<Attach> attaches = attachModel.queryByEntryIdAndParentId(entry.getId(), -1);
+
+                //层级获取所有附件·
+                List<HomeTreeEntryContent> attachVos = new ArrayList<>();
                 for (Attach attach : attaches) {
+                    System.out.println(attach);
+                    attachVos.add(getEntryContents(attach, entry.getId()));
+                }
+                /*for (Attach attach : attaches) {
                     HomeTreeAttachVo attachVo = new HomeTreeAttachVo();
                     attachVo.setText(attach.getAttach_name());
                     attachVo.setEntry_id(attach.getEntry_id());
@@ -62,8 +71,7 @@ public class HomeService {
                     attachVo.setFile_path(attach.getAttach_path());
                     attachVo.setId(attach.getId());
                     attachVos.add(attachVo);
-                }
-                entryContents.add(new HomeTreeEntryContent(entry.getEntry_application(), true, entry.getApplication_path(), null));
+                }*/
                 entryContents.add(new HomeTreeEntryContent("附件", false, "", attachVos));
                 entryVo.setText(entry.getEntry_name());
                 entryVo.setClickable(false);
@@ -75,6 +83,19 @@ public class HomeService {
             awardVOs.add(awardVO);
         }
         return awardVOs;
+    }
+
+    private HomeTreeEntryContent getEntryContents(Attach attach, int entryId) {
+        if (attach.isIs_dir()) {
+            List<Attach> attaches = this.attachModel.queryByEntryIdAndParentId(entryId, attach.getId());
+            List<HomeTreeEntryContent> contents = new ArrayList<>();
+            for (Attach childAttach : attaches) {
+                contents.add(getEntryContents(childAttach, entryId));
+            }
+            return new HomeTreeEntryContent(attach.getAttach_name(), false, "", contents);
+        } else {
+            return new HomeTreeEntryContent(attach.getAttach_name(), true, attach.getAttach_path(), null);
+        }
     }
 
 }

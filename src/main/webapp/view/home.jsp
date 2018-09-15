@@ -41,11 +41,12 @@
     <object id="pdf_viewer" data="/pdf" type="application/pdf" class="right_bar">
 
     </object>
-    <div style="text-align:center; margin-top:25px;color:#747576; font-size:16px">
+
+    <div style="text-align:center; margin-top:25px;color:#747576; font-size:16px;" class="navbar-fixed-bottom">
         <script type="text/javascript">
             var today = new Date(); //新建一个Date对象
             var year = today.getFullYear();//查询年份
-            document.write(year + "年 中国人工智能学会");
+            document.write("中国人工智能学会 @"+year + "Power by BUPT");
         </script>
     </div>
 </body>

@@ -68,7 +68,7 @@
         <script type="text/javascript">
             var today = new Date(); //新建一个Date对象
             var year = today.getFullYear();//查询年份
-            document.write(year + "年 中国人工智能学会");
+            document.write("中国人工智能学会 @"+year + "Power by BUPT");
         </script>
     </div>
 </body>

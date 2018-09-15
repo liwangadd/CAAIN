@@ -29,7 +29,7 @@ public class PrintUtils {
         printTitle(document, title);
 
         addBlankLine(document, 2);
-        Font cellFont = FontFactory.getFont("STSong-Light", "UniGB-UCS2-H");
+        Font cellFont = FontFactory.getFont("STSong-Light", "UniGB-UCS2-H", 18);
         PdfPTable table = new PdfPTable(3);
         PdfPCell cell1 = new PdfPCell(new Paragraph("项目名称", cellFont));
         cell1.setColspan(2);
@@ -73,7 +73,7 @@ public class PrintUtils {
         printTitle(document, title);
 
         addBlankLine(document, 2);
-        Font cellFont = FontFactory.getFont("STSong-Light", "UniGB-UCS2-H");
+        Font cellFont = FontFactory.getFont("STSong-Light", "UniGB-UCS2-H", 18);
         PdfPTable table = new PdfPTable(9);
         PdfPCell cell1 = new PdfPCell(new Paragraph("项目名称", cellFont));
         cell1.setColspan(5);
@@ -112,7 +112,7 @@ public class PrintUtils {
         document.add(table);
 
         addBlankLine(document, 3);
-        Paragraph signParagraph = new Paragraph("专家签字:", cellFont);
+        Paragraph signParagraph = new Paragraph("组长签字:", cellFont);
         signParagraph.setAlignment(Element.ALIGN_RIGHT);
         signParagraph.setIndentationRight(150);
         document.add(signParagraph);

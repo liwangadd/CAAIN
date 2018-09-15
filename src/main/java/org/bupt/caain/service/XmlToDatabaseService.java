@@ -98,7 +98,7 @@ public class XmlToDatabaseService {
     // 插入奖项信息
     private void insertAward(File awardDir, String awardPath) {
         //插入奖项信息并返回奖项ID
-        Award award = new Award(awardDir.getName());
+        Award award = new Award(awardDir.getName().replaceAll("^\\d+-", ""));
         award.setVoted(false);
         int awardId = awardModel.addAndGetId(award);
 
@@ -116,7 +116,7 @@ public class XmlToDatabaseService {
     private void insertEntry(int awardId, File entryDir, String entryPath) {
         // 插入项目信息并返回奖项ID
         String entryName = entryDir.getName();
-        Entry entry = new Entry(entryName, awardId);
+        Entry entry = new Entry(entryName.replaceAll("^\\d+-", ""), awardId);
 
         // 更新项目申请书名称和申请书地址
         File[] applicationFiles = entryDir.listFiles(pathname -> pathname.getName().endsWith(".pdf"));
@@ -129,22 +129,41 @@ public class XmlToDatabaseService {
         int entryId = entryModel.addAndGetId(entry);
 
         // 持久化申请项目的所有附件
-        File attachDir = new File(entryDir.getAbsolutePath() + "/附件");
-        File[] attachFiles = attachDir.listFiles(pathname -> pathname.getName().endsWith(".pdf"));
-        if (attachFiles != null && attachFiles.length > 0) {
-            for (File attachFile : attachFiles) {
-                insertAttach(entryId, attachFile, entryPath + "/附件");
+        File attachDir = new File(entryDir.getAbsolutePath() + SEPARATOR + "附件");
+        File[] attaches = attachDir.listFiles();
+//        File[] attachFiles = attachDir.listFiles(pathname -> pathname.getName().endsWith(".pdf"));
+        if (attaches != null && attaches.length > 0) {
+            for (File attachFile : attaches) {
+                insertAttach(entryId, attachFile, entryPath + SEPARATOR + "附件", -1);
             }
         }
     }
 
     // 持久化附件信息
-    private void insertAttach(int entryId, File attachFile, String attachDirPath) {
-        String attachName = FileUtils.getFileNameNoExtension(attachFile);
-        String attachPath = attachDirPath + SEPARATOR + attachFile.getName();
+    private void insertAttach(int entryId, File attachFile, String attachDirPath, int parentId) {
+        if (attachFile.isFile()) {
+            //如果是文件，直接将附件文件插入到数据库
+            String attachName = FileUtils.getFileNameNoExtension(attachFile);
+            String attachPath = attachDirPath + SEPARATOR + attachFile.getName();
+//            System.out.println(attachPath);
+            Attach attach = new Attach(attachName, attachPath, entryId);
+            attach.setIs_dir(false);
+            attach.setParent_id(parentId);
+            attachModel.addAndGetId(attach);
+        } else {
+            Attach attach = new Attach(attachFile.getName(), attachDirPath + SEPARATOR + attachFile.getName(), entryId);
+            attach.setIs_dir(true);
+            attach.setParent_id(parentId);
+            int attachId = attachModel.addAndGetId(attach);
 
-        Attach attach = new Attach(attachName, attachPath, entryId);
-        attachModel.add(attach);
+            //如果是文件夹，递归遍历该文件夹
+            File[] attaches = attachFile.listFiles();
+            if (attaches != null && attaches.length > 0) {
+                for (File childAttach : attaches) {
+                    insertAttach(entryId, childAttach, attach.getAttach_path(), attachId);
+                }
+            }
+        }
     }
 
 //        List<Element> awardElements = rootElement.elements("award");

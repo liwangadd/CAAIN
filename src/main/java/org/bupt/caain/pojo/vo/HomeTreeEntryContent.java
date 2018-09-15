@@ -5,13 +5,13 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import java.util.List;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class HomeTreeEntryContent{
+public class HomeTreeEntryContent {
     private String text;
     private boolean clickable;
     private String file_path;
-    private List<HomeTreeAttachVo> nodes;
+    private List<HomeTreeEntryContent> nodes;
 
-    public HomeTreeEntryContent(String text, boolean clickable, String file_path, List<HomeTreeAttachVo> nodes) {
+    public HomeTreeEntryContent(String text, boolean clickable, String file_path, List<HomeTreeEntryContent> nodes) {
         this.text = text;
         this.clickable = clickable;
         this.file_path = file_path;
@@ -34,11 +34,11 @@ public class HomeTreeEntryContent{
         this.clickable = clickable;
     }
 
-    public List<HomeTreeAttachVo> getNodes() {
+    public List<HomeTreeEntryContent> getNodes() {
         return nodes;
     }
 
-    public void setNodes(List<HomeTreeAttachVo> nodes) {
+    public void setNodes(List<HomeTreeEntryContent> nodes) {
         this.nodes = nodes;
     }
 
