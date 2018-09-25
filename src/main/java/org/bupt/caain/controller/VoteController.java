@@ -60,18 +60,41 @@ public class VoteController {
         if (expert == null) {
             log.error("非法用户参与投票，ip:\t{}", ip);
             return CommonResult.failure("用户非法");
-        }
-        try {
-            boolean isSuccess = voteService.votePerExpert(votesOfExpert, expert);
-            if (isSuccess) {
+        } else if (expert.isVoted()) {
+            return CommonResult.failure("请勿重复投票");
+        } else if (!expert.isPre_voted()) {
+            return CommonResult.failure("请先进行预投票");
+        } else {
+            try {
+                voteService.votePerExpert(votesOfExpert, expert);
                 return CommonResult.success("投票成功");
-            } else {
-                return CommonResult.failure("请勿重复投票");
+            } catch (DocumentException e) {
+                log.error("专家id:\t{}投票结果PDF文件生成失败", votesOfExpert.get(0).getExpert_id());
+                e.printStackTrace();
+                return CommonResult.failure("投票失败，请重新投票");
             }
-        } catch (DocumentException e) {
-            log.error("专家id:\t{}投票结果PDF文件生成失败", votesOfExpert.get(0).getExpert_id());
-            e.printStackTrace();
-            return CommonResult.failure("投票失败，请重新投票");
+        }
+    }
+
+    @RequestMapping(value = "pre", method = RequestMethod.POST)
+    public @ResponseBody
+    CommonResult preVotePerExpert(@RequestBody List<VotePerExpert> votesOfExpert, HttpServletRequest request) {
+        log.info(votesOfExpert.toString());
+        if (votesOfExpert.size() == 0) {
+            return CommonResult.failure("预投票信息不完整");
+        }
+        String ip = NetworkUtils.getIpAddr(request);
+        Expert expert = voteService.getExpertByIp(ip);
+        if (expert == null) {
+            log.error("非法用户参与预投票，ip:\t{}", ip);
+            return CommonResult.failure("您没有预投票资格");
+        } else if (expert.isPre_voted()) {
+            return CommonResult.failure("请勿重复预投票");
+        } else if (expert.isVoted()) {
+            return CommonResult.failure("您已投票，不可进行预投票");
+        } else {
+            voteService.preVotePerExpert(votesOfExpert, expert);
+            return CommonResult.success("预投票成功");
         }
     }
 
@@ -86,11 +109,17 @@ public class VoteController {
     CommonResult getVoteData(HttpServletRequest request) {
         String ip = NetworkUtils.getIpAddr(request);
         log.info("当前访问专家ip：\t{}", ip);
-        VoteDataVo voteData = voteService.getVoteData(ip);
-        if (voteData.getReason() != null) {
-            return CommonResult.failure(voteData.getReason());
+
+        Expert expert = voteService.getExpertByIp(ip);
+        if (expert == null) {
+            return CommonResult.failure("您没有投票资格");
         } else {
-            return CommonResult.success("获取数据成功", voteData);
+            VoteDataVo voteData = voteService.getVoteData(expert);
+            if (voteData == null) {
+                return CommonResult.failure("投票还未开始");
+            } else {
+                return CommonResult.success("获取数据成功", voteData);
+            }
         }
     }
 
@@ -102,12 +131,14 @@ public class VoteController {
      */
     @RequestMapping(value = "/result/{award_id}", method = RequestMethod.GET)
     public @ResponseBody
-    CommonResult getVoteResult(@PathVariable("award_id") int awardId) {
+    CommonResult getVoteResult(@PathVariable("award_id") int awardId, HttpServletRequest request) {
+        String ip = NetworkUtils.getIpAddr(request);
         if (!voteService.isVotedDown()) {
             return CommonResult.failure("投票还未结束");
         }
+        Expert expert = voteService.getExpertByIp(ip);
         voteService.buildVoteResult(awardId);
-        List<VoteEntryVo> voteResult = voteService.getVoteResult(awardId);
+        List<VoteEntryVo> voteResult = voteService.getVoteResult(awardId, expert);
         return CommonResult.success("获取投票结果", voteResult);
     }
 
@@ -121,7 +152,21 @@ public class VoteController {
     public @ResponseBody
     CommonResult getUnvotedExpertCount() {
         Map<String, Object> content = new HashMap<>();
-        int count = voteService.getUnvotedExpertCount();
+        int count = voteService.getNotVotedExpertCount();
+        content.put("count", count);
+        return CommonResult.success("获取未投票专家人数", content);
+    }
+
+    /**
+     * 获取未预投票专家人数
+     *
+     * @return 未预投票专家人数
+     */
+    @RequestMapping(value = "/pre/unvoted", method = RequestMethod.GET)
+    public @ResponseBody
+    CommonResult getNotPreVotedExpertCount() {
+        Map<String, Object> content = new HashMap<>();
+        int count = voteService.getNotPreVotedExpertCount();
         content.put("count", count);
         return CommonResult.success("获取未投票专家人数", content);
     }

@@ -16,7 +16,8 @@ public class ExpertModel {
     private JdbcTemplate jdbcTemplate;
 
     public void add(Expert expert) {
-        jdbcTemplate.update("INSERT INTO expert (num, ip, voted) VALUES (?, ?, ?)", expert.getNum(), expert.getIp(), expert.getVoted());
+        jdbcTemplate.update("INSERT INTO expert (num, ip, voted, pre_voted) VALUES (?, ?, ?, ?)", expert.getNum(), expert.getIp(), expert.isVoted(),
+                expert.isPre_voted());
     }
 
     /**
@@ -29,12 +30,21 @@ public class ExpertModel {
     }
 
     /**
-     * 获取已投票专家人数
+     * 获取未投票专家人数
      *
      * @return 投票专家人数
      */
-    public int queryVotedCount() {
-        return jdbcTemplate.queryForObject("SELECT COUNT(1) FROM expert WHERE voted = 1", Integer.class);
+    public int queryNotVotedCount() {
+        return jdbcTemplate.queryForObject("SELECT COUNT(1) FROM expert WHERE voted = 0", Integer.class);
+    }
+
+    /**
+     * 获取未预投票专家人数
+     *
+     * @return 投票专家人数
+     */
+    public int queryNotPreVotedCount() {
+        return jdbcTemplate.queryForObject("SELECT COUNT(1) FROM expert WHERE pre_voted = 0", Integer.class);
     }
 
     /**
@@ -44,7 +54,7 @@ public class ExpertModel {
      * @return 专家信息
      */
     public Expert queryById(int expertId) {
-        List<Expert> experts = jdbcTemplate.query("SELECT id, num, ip, voted FROM expert WHERE id = ?",
+        List<Expert> experts = jdbcTemplate.query("SELECT id, num, ip, voted, pre_voted FROM expert WHERE id = ?",
                 new BeanPropertyRowMapper<>(Expert.class), expertId);
         if (null != experts && experts.size() > 0) {
             return experts.get(0);
@@ -57,7 +67,7 @@ public class ExpertModel {
      * 更新所有专家状态为未投票
      */
     public void resetVote() {
-        jdbcTemplate.update("UPDATE expert SET voted = 0");
+        jdbcTemplate.update("UPDATE expert SET voted = 0, pre_voted = 0");
     }
 
     /**
@@ -66,12 +76,16 @@ public class ExpertModel {
      * @param voted 投票状态
      * @param id    专家id
      */
-    public void updateById(boolean voted, int id) {
+    public void updateVoteById(boolean voted, int id) {
         if (voted) {
             jdbcTemplate.update("UPDATE expert SET voted = ? WHERE id = ?", 1, id);
         } else {
             jdbcTemplate.update("UPDATE expert SET voted = ? WHERE id = ?", 0, id);
         }
+    }
+
+    public void updatePreVoteById(boolean preVote, int id) {
+        jdbcTemplate.update("UPDATE expert SET pre_voted = ? WHERE id = ?", preVote, id);
     }
 
     /**
@@ -81,7 +95,7 @@ public class ExpertModel {
      * @return 专家信息
      */
     public Expert queryByIp(String ip) {
-        List<Expert> experts = jdbcTemplate.query("SELECT id, num, ip, voted FROM expert WHERE ip = ?", new BeanPropertyRowMapper<>(Expert.class), ip);
+        List<Expert> experts = jdbcTemplate.query("SELECT id, num, ip, voted, pre_voted FROM expert WHERE ip = ?", new BeanPropertyRowMapper<>(Expert.class), ip);
         if (experts != null && experts.size() > 0) {
             return experts.get(0);
         }

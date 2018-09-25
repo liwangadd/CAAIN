@@ -20,7 +20,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -47,31 +46,47 @@ public class VoteService {
         this.entryExpertModel = entryExpertModel;
     }
 
-    public boolean votePerExpert(List<VotePerExpert> votesOfExpert, Expert expert) throws DocumentException {
-//        Expert expert = expertModel.queryById(votesOfExpert.get(0).getExpert_id());
-        if (expert != null && expert.getVoted() != 1) {
-            for (VotePerExpert votePerExpert : votesOfExpert) {
-                if (entryExpertModel.queryByEntryAndExpert(votePerExpert) == null && votePerExpert.getExpert_id() > 0) {
-                    Entry entry = entryModel.queryById(votePerExpert.getEntry_id());
-                    if (entry != null) {
-                        entry.setLevel1(entry.getLevel1() + votePerExpert.getLevel1());
-                        entry.setLevel2(entry.getLevel2() + votePerExpert.getLevel2());
-                        entry.setLevel3(entry.getLevel3() + votePerExpert.getLevel3());
-                        entryModel.updateLevelById(entry);
-                        entryExpertModel.add(votePerExpert);
-                    }
-                }
+    public void votePerExpert(List<VotePerExpert> votesOfExpert, Expert expert) throws DocumentException {
+        for (VotePerExpert votePerExpert : votesOfExpert) {
+            EntryExpert entryExpert = entryExpertModel.queryByEntryAndExpert(votePerExpert.getEntry_id(), expert.getId());
+            Entry entry = entryModel.queryById(votePerExpert.getEntry_id());
+            if (entryExpert != null && entry != null) {
+                entry.setLevel1(entry.getLevel1() + (votePerExpert.getLevel1() - entryExpert.getLevel1()));
+                entry.setLevel2(entry.getLevel2() + (votePerExpert.getLevel2() - entryExpert.getLevel2()));
+                entry.setLevel3(entry.getLevel3() + (votePerExpert.getLevel3() - entryExpert.getLevel3()));
+                entryModel.updateLevelById(entry);
+                entryExpertModel.update(votePerExpert, expert.getId());
+                this.setShellBuildPrize(true);
             }
-            expertModel.updateById(true, expert.getId());
-            Award award = awardModel.queryById(votesOfExpert.get(0).getAward_id());
-            String awardName = award.getAward_name().replaceAll("^\\d-", "");
-            String filePath = pdfPath + awardName + "/" + expert.getNum() + ".pdf";
-            new PrintUtils().printVoteResultPerExpert(votesOfExpert, filePath, awardName, expert.getNum());
-            return true;
         }
-        return false;
+        expertModel.updateVoteById(true, expert.getId());
+        Award award = awardModel.queryById(votesOfExpert.get(0).getAward_id());
+        String awardName = award.getAward_name().replaceAll("^\\d-", "");
+        String filePath = pdfPath + awardName + "/" + expert.getNum() + ".pdf";
+        new PrintUtils().printVoteResultPerExpert(votesOfExpert, filePath, awardName, expert.getNum());
     }
 
+    public void preVotePerExpert(List<VotePerExpert> votesOfExpert, Expert expert) {
+        for (VotePerExpert votePerExpert : votesOfExpert) {
+            if (entryExpertModel.queryByEntryAndExpert(votePerExpert.getEntry_id(), expert.getId()) == null) {
+                Entry entry = entryModel.queryById(votePerExpert.getEntry_id());
+                if (entry != null) {
+                    entry.setLevel1(entry.getLevel1() + votePerExpert.getLevel1());
+                    entry.setLevel2(entry.getLevel2() + votePerExpert.getLevel2());
+                    entry.setLevel3(entry.getLevel3() + votePerExpert.getLevel3());
+                    entryModel.updateLevelById(entry);
+                    entryExpertModel.add(votePerExpert, expert.getId());
+                }
+            }
+        }
+        expertModel.updatePreVoteById(true, expert.getId());
+    }
+
+    /**
+     * 生成最终总投票结果文件
+     *
+     * @param awardId 最终结果文件对应的奖项ID
+     */
     public void buildVoteResult(int awardId) {
         if (shellBuildPrize) {
             log.info("生成作品最终获奖信息");
@@ -86,28 +101,36 @@ public class VoteService {
      * @param awardId 奖项ID
      * @return 该奖项作品的最终获奖结果
      */
-    public List<VoteEntryVo> getVoteResult(int awardId) {
+    public List<VoteEntryVo> getVoteResult(int awardId, Expert expert) {
         List<Entry> entries = entryModel.queryEntriesByAwardId(awardId);
         int expertCount = expertModel.queryCount();
         return entries.stream().map((Entry entry) -> {
             VoteEntryVo voteEntryVo = new VoteEntryVo(entry);
+            EntryExpert entryExpert = entryExpertModel.queryByEntryIdAndExpertId(entry.getId(), expert.getId());
+            if (entryExpert != null) {
+                voteEntryVo.setLevel1(entryExpert.getLevel1());
+                voteEntryVo.setLevel2(entryExpert.getLevel2());
+                voteEntryVo.setLevel3(entryExpert.getLevel3());
+            }
             voteEntryVo.setExpert_count(expertCount);
             return voteEntryVo;
         }).collect(Collectors.toList());
     }
 
     public boolean isVotedDown() {
-        int count = expertModel.queryCount();
-        int votedCount = expertModel.queryVotedCount();
-        return count == votedCount;
+        return this.expertModel.queryNotPreVotedCount() == 0;
     }
 
     public Expert getExpertByIp(String ip) {
         return expertModel.queryByIp(ip);
     }
 
-    public int getUnvotedExpertCount() {
-        return expertModel.queryCount() - expertModel.queryVotedCount();
+    public int getNotVotedExpertCount() {
+        return expertModel.queryNotVotedCount();
+    }
+
+    public int getNotPreVotedExpertCount() {
+        return expertModel.queryNotPreVotedCount();
     }
 
     public void setShellBuildPrize(boolean shellBuild) {
@@ -118,17 +141,10 @@ public class VoteService {
         return awardModel.queryVoteAwards();
     }
 
-    public VoteDataVo getVoteData(String ip) {
+    public VoteDataVo getVoteData(Expert expert) {
         VoteDataVo voteData = new VoteDataVo();
-        Expert expert = expertModel.queryByIp(ip);
-        if (expert != null) {
-            voteData.setExpert(expert);
-        } else {
-            voteData.setReason("您没有投票资格");
-            return voteData;
-        }
+        voteData.setExpert(expert);
         List<Award> voteAwards = awardModel.queryVoteAwards();
-//        List<VoteAwardVo> voteAwardVos = new ArrayList<>();
         if (voteAwards != null && voteAwards.size() > 0) {
             int expertCount = expertModel.queryCount();
             List<VoteAwardVo> awardVos = voteAwards.stream().map(award -> {
@@ -150,21 +166,9 @@ public class VoteService {
                 awardVo.setExpert_count(expertCount);
                 return awardVo;
             }).collect(Collectors.toList());
-//            for (Award voteAward : voteAwards) {
-//                entryModel.queryEntriesByAwardId(voteAward.getId());
-//                List<VoteEntryVo> entries = entryModel.queryEntriesWithPrize(voteAward.getId(), expert.getId());
-//                entryModel.queryEntriesWithPrize(voteAward.getId(), expert.getId());
-//                if (entries.size() > 0) {
-//                    VoteAwardVo awardVo = new VoteAwardVo(voteAward);
-//                    awardVo.setEntries(entries);
-//                    awardVo.setExpert_count(expertCount);
-//                    voteAwardVos.add(awardVo);
-//                }
-//            }
             voteData.setVoteAwards(awardVos);
         } else {
-            voteData.setReason("投票还未开始");
-            return voteData;
+            return null;
         }
         return voteData;
     }

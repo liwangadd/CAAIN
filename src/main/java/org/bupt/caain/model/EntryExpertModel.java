@@ -27,10 +27,15 @@ public class EntryExpertModel {
      *
      * @param entryExpert 评奖内容
      */
-    public void add(EntryExpert entryExpert) {
+    public void add(EntryExpert entryExpert, int expertId) {
         jdbcTemplate.update("INSERT INTO entry_expert(entry_id, expert_id, level1, level2, level3) VALUES (?, ?, ?, ?, ?)",
-                entryExpert.getEntry_id(), entryExpert.getExpert_id(), entryExpert.getLevel1(), entryExpert.getLevel2(),
+                entryExpert.getEntry_id(), expertId, entryExpert.getLevel1(), entryExpert.getLevel2(),
                 entryExpert.getLevel3());
+    }
+
+    public void update(EntryExpert entryExpert, int expertId) {
+        jdbcTemplate.update("UPDATE entry_expert SET level1 = ?, level2 = ?, level3 = ? WHERE entry_id = ? AND expert_id = ?",
+                entryExpert.getLevel1(), entryExpert.getLevel2(), entryExpert.getLevel3(), entryExpert.getEntry_id(), expertId);
     }
 
     /**
@@ -39,10 +44,11 @@ public class EntryExpertModel {
      * @param entryExpert 查询条件
      * @return 评奖结果
      */
-    public EntryExpert queryByEntryAndExpert(EntryExpert entryExpert) {
-        List<EntryExpert> entryExperts = jdbcTemplate.query("SELECT entry_id, expert_id, level1, level2, level3 FROM entry_expert WHERE entry_id = ? AND expert_id = ?",
+    public EntryExpert queryByEntryAndExpert(int entryId, int expertId) {
+        List<EntryExpert> entryExperts = jdbcTemplate.query("SELECT entry_id, expert_id, level1, level2, level3 " +
+                        "FROM entry_expert WHERE entry_id = ? AND expert_id = ?",
                 new BeanPropertyRowMapper<>(EntryExpert.class),
-                entryExpert.getEntry_id(), entryExpert.getExpert_id());
+                entryId, expertId);
         if (null != entryExperts && entryExperts.size() > 0) {
             return entryExperts.get(0);
         }
@@ -53,7 +59,8 @@ public class EntryExpertModel {
      * 删除所有评奖结果
      */
     public void deleteAll() {
-        jdbcTemplate.update("DELETE FROM  entry_expert");
+        jdbcTemplate.update("DELETE FROM  entry_expert WHERE entry_id in (SELECT id FROM entry WHERE award_id IN (" +
+                "SELECT id FROM award WHERE voted = 1))");
     }
 
     /**
@@ -62,13 +69,13 @@ public class EntryExpertModel {
      * @param entryIds 作品IDs
      */
     public void deleteByEntryIds(List<Integer> entryIds) {
-        entryIds.stream().forEach(entryId->jdbcTemplate.update("DELETE FROM entry_expert WHERE entry_id = ?", entryId));
+        entryIds.stream().forEach(entryId -> jdbcTemplate.update("DELETE FROM entry_expert WHERE entry_id = ?", entryId));
     }
 
-    public EntryExpert queryByEntryIdAndExpertId(int entryId, int expertId){
+    public EntryExpert queryByEntryIdAndExpertId(int entryId, int expertId) {
         List<EntryExpert> entryExperts = jdbcTemplate.query("SELECT level1, level2, level3 FROM entry_expert WHERE entry_id = ? AND expert_id = ?",
                 new BeanPropertyRowMapper<>(EntryExpert.class), entryId, expertId);
-        if(entryExperts!=null&&entryExperts.size()>0){
+        if (entryExperts != null && entryExperts.size() > 0) {
             return entryExperts.get(0);
         }
         return null;

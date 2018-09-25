@@ -75,7 +75,7 @@ public class XmlToDatabaseService {
             Element expertElement = (Element) expertIterator.next();
             String no = expertElement.elementText(EXPERT_NUM);
             String ip = expertElement.elementText(EXPERT_IP);
-            Expert expert = new Expert(no, ip, 0);
+            Expert expert = new Expert(no, ip);
             expertModel.add(expert);
         }
     }
@@ -84,7 +84,7 @@ public class XmlToDatabaseService {
 //        Element rootElement = getRootElement("classpath:config/kjcdoc.xml");
         File caainDir = new File(docPath);
         if (!caainDir.exists() || caainDir.isFile()) {
-            log.error("奖项文件夹不存在");
+            log.error("奖项文件夹不存在:" + docPath);
             throw new FileNotFoundException("奖项文件夹不存在");
         }
         File[] awardDirs = caainDir.listFiles(File::isDirectory);

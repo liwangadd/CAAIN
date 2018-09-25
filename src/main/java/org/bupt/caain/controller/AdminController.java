@@ -55,7 +55,7 @@ public class AdminController {
             return CommonResult.failure("该奖项投票还未开始");
         }
         if (!voteService.isVotedDown()) {
-            return CommonResult.failure("还有" + voteService.getUnvotedExpertCount() + "名专家未投票");
+            return CommonResult.failure("还有" + voteService.getNotVotedExpertCount() + "名专家未投票");
         }
         try {
             adminService.printFinalPDF(award_id);

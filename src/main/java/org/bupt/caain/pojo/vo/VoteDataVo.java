@@ -9,7 +9,6 @@ import java.util.List;
 public class VoteDataVo {
 
     private Expert expert;
-    private String reason;
     private List<VoteAwardVo> voteAwards;
 
     public Expert getExpert() {
@@ -18,14 +17,6 @@ public class VoteDataVo {
 
     public void setExpert(Expert expert) {
         this.expert = expert;
-    }
-
-    public String getReason() {
-        return reason;
-    }
-
-    public void setReason(String reason) {
-        this.reason = reason;
     }
 
     public List<VoteAwardVo> getVoteAwards() {

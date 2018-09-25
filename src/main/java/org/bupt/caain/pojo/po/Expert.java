@@ -11,13 +11,16 @@ public class Expert {
     //    专家IP
     private String ip;
 
-    //    是否已投票
-    private int voted;
+    private boolean pre_voted;
 
-    public Expert(String num, String ip, int voted) {
+    //    是否已投票
+    private boolean voted;
+
+    public Expert(String num, String ip) {
         this.num = num;
         this.ip = ip;
-        this.voted = voted;
+        this.pre_voted = false;
+        this.voted = false;
     }
 
     public Expert() {
@@ -47,11 +50,19 @@ public class Expert {
         this.ip = ip;
     }
 
-    public int getVoted() {
+    public boolean isPre_voted() {
+        return pre_voted;
+    }
+
+    public void setPre_voted(boolean pre_voted) {
+        this.pre_voted = pre_voted;
+    }
+
+    public boolean isVoted() {
         return voted;
     }
 
-    public void setVoted(int voted) {
+    public void setVoted(boolean voted) {
         this.voted = voted;
     }
 
@@ -61,6 +72,8 @@ public class Expert {
                 "id=" + id +
                 ", num='" + num + '\'' +
                 ", ip='" + ip + '\'' +
+                ", pre_voted=" + pre_voted +
+                ", voted=" + voted +
                 '}';
     }
 }

@@ -81,9 +81,9 @@ public class EntryModel {
                 awardId);
         log.warn(entries.toString());
         for (Entry entry : entries) {
-            if (entry.getLevel1() >= 8) {
+            if (entry.getLevel1() >= firstThreshold) {
                 entry.setEntry_prize("一等奖");
-            } else if (entry.getLevel1() + entry.getLevel2() >= 6) {
+            } else if (entry.getLevel1() + entry.getLevel2() >= secondThreshold) {
                 entry.setEntry_prize("二等奖");
             } else {
                 entry.setEntry_prize("三等奖");
@@ -123,7 +123,8 @@ public class EntryModel {
      * 重置投票结果
      */
     public void resetAll() {
-        jdbcTemplate.update("UPDATE entry SET entry_prize='', level1 = 0, level2 = 0, level3 = 0");
+        jdbcTemplate.update("UPDATE entry SET entry_prize='', level1 = 0, level2 = 0, level3 = 0 WHERE award_id in (" +
+                "SELECT id FROM award WHERE voted = 1)");
     }
 
     /**
