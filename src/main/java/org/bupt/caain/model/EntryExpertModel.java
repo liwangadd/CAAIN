@@ -15,7 +15,6 @@ import java.util.List;
 public class EntryExpertModel {
 
     private final JdbcTemplate jdbcTemplate;
-    private static final Logger log = LoggerFactory.getLogger(EntryExpertModel.class);
 
     @Autowired
     public EntryExpertModel(JdbcTemplate jdbcTemplate) {
@@ -41,7 +40,7 @@ public class EntryExpertModel {
     /**
      * 根据专家和作品查询评奖结果
      *
-     * @param entryExpert 查询条件
+     * @param entryId 查询条件
      * @return 评奖结果
      */
     public EntryExpert queryByEntryAndExpert(int entryId, int expertId) {
