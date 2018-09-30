@@ -147,4 +147,9 @@ public class EntryModel {
                         "(SELECT entry_id, level1, level2, level3 FROM entry_expert WHERE expert_id = ?) as ee ON e.id = ee.entry_id WHERE e.award_id = ?",
                 new BeanPropertyRowMapper<>(VoteEntryVo.class), awardId, expertId);
     }
+
+    public List<Entry> queryVotedEntries() {
+        return jdbcTemplate.query("SELECT e.id, e.entry_name, e.entry_prize, e.entry_application, e.application_path, e.level1, e.level2, e.level3, e.award_id" +
+                " FROM entry e left join award a on e.award_id = a.id where a.voted = 1", new BeanPropertyRowMapper<>(Entry.class));
+    }
 }

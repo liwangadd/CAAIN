@@ -28,12 +28,15 @@ $(function () {
         success: (result) => {
             let award_div = $("#pdf_btn_group");
             let vote_div = $("#vote_btn_group");
+            let view_div = $("#vote_result_group");
             if (result['code'] !== 'FAILURE') {
                 content = result['content'];
                 content.forEach(function (award) {
                     award_ids.push(award['id']);
-                    award_div.append(`<button id="award_btn_${award['id']}" class="btn btn-primary" style="margin-left: 8px">${award['award_name'].replace(/^\d-/, '')}PDF</button>`)
-                    vote_div.append(`<button id="vote_btn_${award['id']}" class="btn btn-primary" style="margin-left: 8px">开启${award['award_name'].replace(/^\d-/, '')}投票</button>`)
+                    award_div.append(`<button id="award_btn_${award['id']}" class="btn btn-primary" style="margin-left: 8px">${award['award_name'].replace(/^\d-/, '')}PDF</button>`);
+                    vote_div.append(`<button id="vote_btn_${award['id']}" class="btn btn-primary" style="margin-left: 8px">开启${award['award_name'].replace(/^\d-/, '')}投票</button>`);
+                    view_div.append(`<button id="view_btn_${award['id']}" class="btn btn-primary" style="margin-left: 8px">查看${award['award_name'].replace(/^\\d-/, '')}结果</button>`);
+
                 });
                 for (let i = 1, len = content.length; i <= len; ++i) {
                     $(`#award_btn_${i}`).on('click', () => {
@@ -42,6 +45,9 @@ $(function () {
                     $(`#vote_btn_${i}`).on('click', ()=>{
                         startVote(award_ids[i-1]);
                     });
+                    $(`#view_btn_${i}`).on('click', ()=>{
+                        window.location.href="/admin/result";
+                    })
                 }
             }
         }

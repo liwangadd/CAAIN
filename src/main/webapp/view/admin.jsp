@@ -37,6 +37,10 @@
 
     </div>
 
+    <div id="vote_result_group" style="margin-top: 20px">
+
+    </div>
+
     <div>
         <button id="clear_vote" class="btn btn-default" style="margin-top: 40px">清空投票结果</button>
     </div>

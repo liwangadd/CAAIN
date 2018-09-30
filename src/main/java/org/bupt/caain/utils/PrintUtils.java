@@ -117,6 +117,11 @@ public class PrintUtils {
         signParagraph.setIndentationRight(150);
         document.add(signParagraph);
 
+        Paragraph subSignParagraph = new Paragraph("副组长签字:", cellFont);
+        subSignParagraph.setAlignment(Element.ALIGN_RIGHT);
+        subSignParagraph.setIndentationRight(150);
+        document.add(subSignParagraph);
+
         document.close();
         return "Done";
     }
@@ -146,7 +151,7 @@ public class PrintUtils {
 
     private void printTitle(Document document, String title) throws DocumentException {
         Font chapterFont = FontFactory.getFont("STSong-Light", "UniGB-UCS2-H", 28, Font.BOLD);
-        Chunk chunk = new Chunk(title, chapterFont);
+        Chunk chunk = new Chunk("吴文俊人工智能 -- " + title, chapterFont);
         Paragraph titleParagraph = new Paragraph(chunk);
         titleParagraph.setAlignment(Paragraph.ALIGN_CENTER);
         addBlankLine(document, 2);

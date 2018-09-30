@@ -7,6 +7,7 @@ import org.bupt.caain.model.EntryModel;
 import org.bupt.caain.model.ExpertModel;
 import org.bupt.caain.pojo.po.Award;
 import org.bupt.caain.pojo.po.Entry;
+import org.bupt.caain.utils.CommonResult;
 import org.bupt.caain.utils.PrintUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -101,5 +102,10 @@ public class AdminService {
         Award award = awardModel.queryById(award_id);
         award.setVoted(false);
         awardModel.update(award);
+    }
+
+    public List<Entry> getVoteResult(int awardId) {
+        return this.entryModel.queryVotedEntries();
+
     }
 }

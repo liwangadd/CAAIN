@@ -24,6 +24,7 @@ public class AttachModel {
 
     public int addAndGetId(Attach attach) {
         KeyHolder awardKeyHolder = new GeneratedKeyHolder();
+        System.out.println(attach);
         jdbcTemplate.update(connection -> {
             PreparedStatement ps = connection.prepareStatement("INSERT INTO attach (attach_name, attach_path, " +
                             "entry_id, is_dir, parent_id) VALUES (?, ?, ?, ?, ?)",

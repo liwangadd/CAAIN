@@ -2,6 +2,7 @@ package org.bupt.caain.controller;
 
 import com.itextpdf.text.DocumentException;
 import org.bupt.caain.pojo.po.Award;
+import org.bupt.caain.pojo.po.Entry;
 import org.bupt.caain.service.AdminService;
 import org.bupt.caain.service.VoteService;
 import org.bupt.caain.utils.CommonResult;
@@ -27,6 +28,11 @@ public class AdminController {
     @RequestMapping(value = "", method = RequestMethod.GET)
     public String adminPage() {
         return "admin";
+    }
+
+    @RequestMapping(value = "result", method = RequestMethod.GET)
+    public String VoteResultView(){
+        return "result-view";
     }
 
     @RequestMapping(value = "awards", method = RequestMethod.GET)
@@ -76,6 +82,17 @@ public class AdminController {
             return CommonResult.failure("该奖项投票已开启");
         } else {
             return CommonResult.failure("开启投票失败");
+        }
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "result/view/{awardId}", method = RequestMethod.GET)
+    public CommonResult voteResult(@PathVariable int awardId){
+        List<Entry> entries = adminService.getVoteResult(awardId);
+        if(entries!=null&&entries.size()>0){
+            return CommonResult.success("查询成功", entries);
+        }else{
+            return CommonResult.failure("没有参评该奖项的作品");
         }
     }
 
